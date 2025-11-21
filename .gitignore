@@ -1,0 +1,11 @@
+virtual environment
+.venv
+
+environment variables
+.env
+
+database_migrations
+migrations
+
+pycache
+__pycache__

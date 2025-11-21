@@ -1,0 +1,12 @@
+Django>=4.2
+djangorestframework>=3.14
+django-cors-headers
+django-environ
+psycopg2-binary
+django-storages[boto3]
+boto3
+celery>=5.2
+redis>=4.5
+python-dotenv
+djangorestframework-simplejwt
+requests
