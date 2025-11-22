@@ -1,6 +1,6 @@
 import { ArrowRight } from 'lucide-react';
 
-const CTA = () => (
+const CTA = ({ onApplyClick, onBookingClick }) => (
   <section className="py-32 bg-neutral-50 border-t border-neutral-100">
     <div className="max-w-7xl mx-auto px-8">
       <div className="max-w-3xl mx-auto text-center">
@@ -15,11 +15,17 @@ const CTA = () => (
           Early application is encouraged.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button className="bg-neutral-900 text-white px-10 py-4 text-sm tracking-wide hover:bg-neutral-800 transition-colors inline-flex items-center justify-center gap-3">
+          <button 
+            onClick={onApplyClick}
+            className="bg-neutral-900 text-white px-10 py-4 text-sm tracking-wide hover:bg-neutral-800 transition-colors inline-flex items-center justify-center gap-3"
+          >
             Start Application
             <ArrowRight size={16} />
           </button>
-          <button className="border border-neutral-300 text-neutral-900 px-10 py-4 text-sm tracking-wide hover:border-neutral-400 transition-colors">
+          <button 
+            onClick={onBookingClick}
+            className="border border-neutral-300 text-neutral-900 px-10 py-4 text-sm tracking-wide hover:border-neutral-400 transition-colors"
+          >
             Schedule a Visit
           </button>
         </div>

@@ -1,6 +1,6 @@
-import { ArrowRight, Play, ChevronDown } from 'lucide-react';
+import { ArrowRight, Play } from 'lucide-react';
 
-const Hero = () => (
+const Hero = ({ onApplyClick }) => (
   <section className="min-h-screen bg-neutral-900 relative flex items-end pb-20 md:pb-32">
     {/* Subtle gradient overlay */}
     <div className="absolute inset-0 bg-gradient-to-b from-neutral-900 via-neutral-900/95 to-neutral-800" />
@@ -25,7 +25,10 @@ const Hero = () => (
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 sm:gap-8">
-          <button className="group bg-white text-neutral-900 px-8 py-4 text-sm tracking-wide hover:bg-neutral-100 transition-all inline-flex items-center gap-3">
+          <button 
+            onClick={onApplyClick}
+            className="group bg-white text-neutral-900 px-8 py-4 text-sm tracking-wide hover:bg-neutral-100 transition-all inline-flex items-center gap-3"
+          >
             Begin Application
             <ArrowRight
               size={16}

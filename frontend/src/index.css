@@ -1,7 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 
 body {
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
@@ -24,4 +25,32 @@ button {
 ::selection {
   background-color: #262626;
   color: #ffffff;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fafafa;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d4d4d4;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a3a3a3;
+}
+
+/* Typography plugin styles for blog content */
+.prose {
+  --tw-prose-body: #525252;
+  --tw-prose-headings: #171717;
+  --tw-prose-links: #171717;
+  --tw-prose-bold: #171717;
+  --tw-prose-quotes: #525252;
+  --tw-prose-quote-borders: #d4d4d4;
 }
