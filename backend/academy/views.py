@@ -20,6 +20,7 @@ class ProgramViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [AllowAny]
     throttle_classes = [PublicAnonThrottle, PublicUserThrottle]
     lookup_field = 'slug'
+    lookup_value_regex = '[^/]+'  # Allow any characters in slug except forward slash
 
 class RegistrationCreateView(generics.CreateAPIView):
     queryset = Registration.objects.all()
@@ -42,6 +43,9 @@ class BlogViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = BlogPost.objects.filter(is_published=True).order_by('-published_at')
     serializer_class = BlogSerializer
     permission_classes = [AllowAny]
+    throttle_classes = [PublicAnonThrottle, PublicUserThrottle]
+    lookup_field = 'slug'
+    lookup_value_regex = '[^/]+'  # Allow any characters in slug except forward slash
 
 class InstructorViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Instructor.objects.all()
