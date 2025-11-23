@@ -57,7 +57,7 @@ const Programs = ({ onApplyClick }) => {
       try {
         const data = await api.getPrograms();
         const results = data.results || data;
-        setPrograms(results.length > 0 ? results : fallbackPrograms);
+        setPrograms(results.length > 0 ? results.slice(0, 4) : fallbackPrograms);
       } catch (err) {
         console.error('Failed to fetch programs:', err);
         setPrograms(fallbackPrograms);

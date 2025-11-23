@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Sparkles, Zap, Rocket, Trophy, ArrowRight, ArrowUpRight } from 'lucide-react';
+import api from '../services/api';
 
-const ProgramsShowcase = () => {
+const ProgramsPage = ({ onApplyClick }) => {
   const [programs, setPrograms] = useState([]);
   const [activeCategory, setActiveCategory] = useState('all');
   const [loading, setLoading] = useState(true);
@@ -14,130 +16,19 @@ const ProgramsShowcase = () => {
     { id: 'advanced', name: 'Ages 14-18', icon: Trophy, ageRange: [14, 18] },
   ];
 
-  // Sample programs data
-  const allPrograms = [
-    {
-      id: 1,
-      title: 'Scratch Jr. Adventures',
-      slug: 'scratch-jr-adventures',
-      age_min: 5,
-      age_max: 8,
-      duration_weeks: 8,
-      price: 15000,
-      summary: 'Visual storytelling and coding for youngest learners. Create interactive stories and simple games.',
-      category: 'beginner',
-    },
-    {
-      id: 2,
-      title: 'LEGO Robotics Explorer',
-      slug: 'lego-robotics-explorer',
-      age_min: 6,
-      age_max: 9,
-      duration_weeks: 10,
-      price: 18000,
-      summary: 'Hands-on robotics with LEGO Education kits. Build and program simple robots.',
-      category: 'beginner',
-    },
-    {
-      id: 3,
-      title: 'Scratch Programming',
-      slug: 'scratch-programming-mastery',
-      age_min: 8,
-      age_max: 12,
-      duration_weeks: 12,
-      price: 22000,
-      summary: 'Master game development and animation with Scratch. Learn loops, variables, and logic.',
-      category: 'intermediate',
-    },
-    {
-      id: 4,
-      title: 'Python for Young Coders',
-      slug: 'python-young-coders',
-      age_min: 9,
-      age_max: 13,
-      duration_weeks: 14,
-      price: 25000,
-      summary: 'Text-based programming with Python. Create games, animations, and creative projects.',
-      category: 'intermediate',
-      featured: true
-    },
-    {
-      id: 5,
-      title: 'Web Development',
-      slug: 'web-development-foundations',
-      age_min: 10,
-      age_max: 14,
-      duration_weeks: 12,
-      price: 24000,
-      summary: 'Build modern websites with HTML, CSS, and JavaScript. Deploy your first live sites.',
-      category: 'intermediate',
-    },
-    {
-      id: 6,
-      title: 'Robotics & Engineering',
-      slug: 'robotics-engineering',
-      age_min: 10,
-      age_max: 14,
-      duration_weeks: 12,
-      price: 28000,
-      summary: 'Arduino programming, sensors, and autonomous robots. Solve real-world challenges.',
-      category: 'intermediate',
-      featured: true
-    },
-    {
-      id: 7,
-      title: 'AI & Machine Learning',
-      slug: 'artificial-intelligence',
-      age_min: 13,
-      age_max: 17,
-      duration_weeks: 16,
-      price: 35000,
-      summary: 'Neural networks, computer vision, and ethical AI. Build applications with real impact.',
-      category: 'advanced',
-      featured: true
-    },
-    {
-      id: 8,
-      title: 'Full-Stack Development',
-      slug: 'fullstack-web-development',
-      age_min: 14,
-      age_max: 18,
-      duration_weeks: 18,
-      price: 38000,
-      summary: 'Professional web apps with React, Node.js, and databases. Deploy to the cloud.',
-      category: 'advanced',
-    },
-    {
-      id: 9,
-      title: 'Game Development',
-      slug: 'game-development-unity',
-      age_min: 12,
-      age_max: 17,
-      duration_weeks: 16,
-      price: 34000,
-      summary: 'Create 2D and 3D games with Unity and C#. Build a complete game portfolio.',
-      category: 'advanced',
-    },
-    {
-      id: 10,
-      title: 'Individual Mentorship',
-      slug: 'individual-mentorship',
-      age_min: 8,
-      age_max: 18,
-      duration_weeks: 8,
-      price: 50000,
-      summary: 'Personalized 1-on-1 instruction tailored to your child\'s unique interests and goals.',
-      category: 'all',
-      highlight: true
-    }
-  ];
-
   useEffect(() => {
-    // Simulate API load
-    setTimeout(() => {
-      setPrograms(allPrograms);
-      setLoading(false);
-    }, 300);
+    const fetchPrograms = async () => {
+      try {
+        const data = await api.getPrograms();
+        const results = data.results || data;
+        setPrograms(results);
+      } catch (err) {
+        console.error('Failed to fetch programs:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPrograms();
   }, []);
 
   const filteredPrograms = activeCategory === 'all' 
@@ -150,7 +41,7 @@ const ProgramsShowcase = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-neutral-50 py-20 px-8">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto pt-12">
         {/* Header */}
         <div className="max-w-2xl mb-12">
           <p className="text-neutral-400 text-sm tracking-widest uppercase mb-4">
@@ -160,7 +51,7 @@ const ProgramsShowcase = () => {
             Designed for every learner
           </h1>
           <p className="text-neutral-600 font-light leading-relaxed text-lg">
-            From visual coding for beginners to advanced AI research. 15+ programs 
+            From visual coding for beginners to advanced AI research. Programs 
             tailored to different ages, interests, and skill levels.
           </p>
         </div>
@@ -197,19 +88,23 @@ const ProgramsShowcase = () => {
               </div>
             ))}
           </div>
+        ) : filteredPrograms.length === 0 ? (
+          <div className="text-center py-20">
+            <p className="text-neutral-500">No programs found in this category.</p>
+          </div>
         ) : (
           <div className="grid md:grid-cols-2 gap-6">
             {filteredPrograms.map((program) => (
               <div
                 key={program.id}
                 className={`group border transition-all ${
-                  program.highlight
+                  program.slug === 'individual-mentorship'
                     ? 'border-neutral-900 bg-neutral-900 text-white md:col-span-2'
                     : 'border-neutral-200 hover:border-neutral-400 bg-white'
                 }`}
               >
                 <div className="p-8">
-                  {program.highlight && (
+                  {program.slug === 'individual-mentorship' && (
                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 text-xs tracking-wide uppercase mb-4">
                       <Sparkles size={12} />
                       Premium Mentorship
@@ -218,20 +113,20 @@ const ProgramsShowcase = () => {
                   
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex gap-3 text-xs tracking-wide uppercase">
-                      <span className={program.highlight ? 'text-white/60' : 'text-neutral-400'}>
+                      <span className={program.slug === 'individual-mentorship' ? 'text-white/60' : 'text-neutral-400'}>
                         Ages {program.age_min}–{program.age_max}
                       </span>
-                      <span className={program.highlight ? 'text-white/40' : 'text-neutral-300'}>
+                      <span className={program.slug === 'individual-mentorship' ? 'text-white/40' : 'text-neutral-300'}>
                         •
                       </span>
-                      <span className={program.highlight ? 'text-white/60' : 'text-neutral-400'}>
+                      <span className={program.slug === 'individual-mentorship' ? 'text-white/60' : 'text-neutral-400'}>
                         {program.duration_weeks} weeks
                       </span>
                     </div>
                   </div>
 
                   <h3 className={`text-xl md:text-2xl font-light mb-3 transition-colors ${
-                    program.highlight 
+                    program.slug === 'individual-mentorship' 
                       ? 'text-white' 
                       : 'text-neutral-900 group-hover:text-neutral-600'
                   }`}>
@@ -239,31 +134,33 @@ const ProgramsShowcase = () => {
                   </h3>
 
                   <p className={`font-light leading-relaxed mb-6 text-sm ${
-                    program.highlight ? 'text-white/80' : 'text-neutral-600'
+                    program.slug === 'individual-mentorship' ? 'text-white/80' : 'text-neutral-600'
                   }`}>
                     {program.summary}
                   </p>
 
                   <div className={`flex items-center justify-between pt-4 border-t ${
-                    program.highlight ? 'border-white/20' : 'border-neutral-100'
+                    program.slug === 'individual-mentorship' ? 'border-white/20' : 'border-neutral-100'
                   }`}>
-                    <span className={`font-normal ${program.highlight ? 'text-white' : 'text-neutral-900'}`}>
-                      KSh {program.price.toLocaleString()}
+                    <span className={`font-normal ${program.slug === 'individual-mentorship' ? 'text-white' : 'text-neutral-900'}`}>
+                      {program.price ? `KSh ${program.price.toLocaleString()}` : 'Contact for pricing'}
                     </span>
                     <div className="flex gap-4">
-                      <button
+                      <Link
+                        to={`/programs/${program.slug}`}
                         className={`inline-flex items-center gap-2 text-sm transition-colors ${
-                          program.highlight
+                          program.slug === 'individual-mentorship'
                             ? 'text-white/80 hover:text-white'
                             : 'text-neutral-600 hover:text-neutral-900'
                         }`}
                       >
                         Details
                         <ArrowUpRight size={14} />
-                      </button>
+                      </Link>
                       <button
+                        onClick={() => onApplyClick(program)}
                         className={`inline-flex items-center gap-2 text-sm font-medium ${
-                          program.highlight ? 'text-white' : 'text-neutral-900'
+                          program.slug === 'individual-mentorship' ? 'text-white' : 'text-neutral-900'
                         }`}
                       >
                         Apply
@@ -281,7 +178,7 @@ const ProgramsShowcase = () => {
         <div className="mt-16 grid md:grid-cols-3 gap-8 p-8 bg-white border border-neutral-200">
           <div>
             <div className="text-2xl font-light text-neutral-900 mb-2">
-              15+ Programs
+              {programs.length}+ Programs
             </div>
             <p className="text-neutral-600 text-sm font-light">
               Ages 5-18, all skill levels
@@ -309,4 +206,4 @@ const ProgramsShowcase = () => {
   );
 };
 
-export default ProgramsShowcase;
+export default ProgramsPage;
