@@ -1,3 +1,4 @@
+# backend/academy/management/commands/seed_programs.py
 from django.core.management.base import BaseCommand
 from academy.models import Program
 
@@ -7,318 +8,414 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         programs = [
-            # === BEGINNER TIER (Ages 5-8) ===
+            # === BOOTSTRAP TIER - NO CAPITAL REQUIRED (Ages 5-8) ===
+            # These 4 programs are featured on homepage with free/minimal setup
             {
-                "title": "Scratch Jr. Adventures",
-                "slug": "scratch-jr-adventures",
-                "summary": "Introduction to coding through visual storytelling. Young learners create interactive stories and simple games using Scratch Jr, building computational thinking from the ground up.",
+                "title": "Scratch Jr. Community Workshops",
+                "slug": "scratch-jr-community",
+                "summary": "Free community-led workshops where young learners discover coding through visual storytelling. Open to all ages 5-8. Meet once weekly in group settings.",
+                "age_min": 5,
+                "age_max": 8,
+                "duration_weeks": 12,
+                "price": 0,  # Free/Community based
+                "features": [
+                    "Visual block-based programming",
+                    "Community learning environment",
+                    "Peer collaboration",
+                    "Creative expression through code",
+                    "Open-source tools (Scratch Jr)",
+                    "Group showcase project"
+                ],
+                "is_published": True
+            },
+            {
+                "title": "Python Self-Paced Learning Path",
+                "slug": "python-self-paced",
+                "summary": "Guided self-paced curriculum where learners progress at their own speed. Community support through forums and peer mentorship. All resources are open-source and freely available.",
+                "age_min": 9,
+                "age_max": 13,
+                "duration_weeks": 16,
+                "price": 0,  # Free with community support
+                "features": [
+                    "Self-guided curriculum modules",
+                    "Python fundamentals via free resources",
+                    "Community forum support",
+                    "Peer code review groups",
+                    "Open-source project library",
+                    "Completion certificate"
+                ],
+                "is_published": True
+            },
+            {
+                "title": "DIY Robotics & Electronics Club",
+                "slug": "diy-robotics-club",
+                "summary": "Learn robotics using affordable, open-source hardware (Arduino, breadboards). Students source their own affordable components (~3,000 KSh per project). Community workshops for hands-on learning.",
+                "age_min": 10,
+                "age_max": 14,
+                "duration_weeks": 14,
+                "price": 0,  # Free instruction, students buy ~3K hardware
+                "features": [
+                    "Arduino programming fundamentals",
+                    "Affordable electronics sourcing guide",
+                    "Community maker lab access",
+                    "Peer teaching opportunities",
+                    "Open-source circuit designs",
+                    "Project showcase competitions"
+                ],
+                "is_published": True
+            },
+            {
+                "title": "Web Development Bootcamp (Open Source)",
+                "slug": "web-dev-bootcamp-free",
+                "summary": "Learn modern web development using free tools (VS Code, GitHub, Netlify). Community-driven curriculum built collaboratively. Monetize projects early to fund growth.",
+                "age_min": 11,
+                "age_max": 15,
+                "duration_weeks": 12,
+                "price": 0,  # Free with monetization pathway
+                "features": [
+                    "HTML5, CSS3, JavaScript fundamentals",
+                    "Free deployment (GitHub Pages, Netlify)",
+                    "Open-source framework learning",
+                    "Freelance project opportunities",
+                    "Revenue-sharing on student projects",
+                    "Portfolio building for paid work"
+                ],
+                "is_published": True
+            },
+
+            # === PROFESSIONAL TIER - FOR HIGH-END CLIENTS ===
+            # Premium pricing targeting affluent Nairobi families
+            
+            # === BEGINNER TIER (Ages 5-9) - PREMIUM ===
+            {
+                "title": "Scratch Jr. Intensive (Small Group)",
+                "slug": "scratch-jr-intensive",
+                "summary": "Intimate group sessions (max 4 students) with personalized attention. Premium curriculum combining storytelling, game design, and computational thinking fundamentals.",
                 "age_min": 5,
                 "age_max": 8,
                 "duration_weeks": 8,
-                "price": 15000,
+                "price": 120000,
                 "features": [
-                    "Visual block-based programming",
-                    "Creative storytelling fundamentals",
-                    "Basic sequencing and logic",
-                    "Character animation basics",
-                    "Simple game mechanics",
-                    "Parent showcase project"
+                    "Maximum 4 students per session",
+                    "Personalized learning pace",
+                    "Advanced animation techniques",
+                    "Interactive game design principles",
+                    "Professional project documentation",
+                    "Parent progress reports"
                 ],
                 "is_published": True
             },
             {
-                "title": "LEGO Robotics Explorer",
-                "slug": "lego-robotics-explorer",
-                "summary": "Hands-on introduction to robotics using LEGO Education kits. Children build and program simple robots, learning engineering principles through play-based activities.",
+                "title": "LEGO Robotics Explorer (Premium)",
+                "slug": "lego-robotics-explorer-premium",
+                "summary": "Hands-on robotics education using premium LEGO Education kits in state-of-the-art facilities. Small cohorts with instructor mentorship and competition preparation.",
                 "age_min": 6,
                 "age_max": 9,
                 "duration_weeks": 10,
-                "price": 18000,
+                "price": 145000,
                 "features": [
-                    "LEGO WeDo construction",
-                    "Basic mechanical principles",
-                    "Simple motor control",
-                    "Sensor introduction",
-                    "Collaborative building",
-                    "Problem-solving through play"
+                    "Premium LEGO Education kits provided",
+                    "Max 5 students per cohort",
+                    "Modern maker lab facilities",
+                    "STEM competition preparation",
+                    "Take-home project kits",
+                    "Monthly family demo days"
                 ],
                 "is_published": True
             },
-            
-            # === INTERMEDIATE TIER (Ages 8-12) ===
+
+            # === INTERMEDIATE TIER (Ages 10-14) - PREMIUM ===
             {
-                "title": "Scratch Programming Mastery",
-                "slug": "scratch-programming-mastery",
-                "summary": "Comprehensive Scratch programming course teaching game development, animation, and interactive projects. Students master variables, loops, conditionals, and event-driven programming.",
-                "age_min": 8,
-                "age_max": 12,
-                "duration_weeks": 12,
-                "price": 22000,
-                "features": [
-                    "Complete Scratch environment mastery",
-                    "Variables and data structures",
-                    "Loops and conditional logic",
-                    "Event-driven programming",
-                    "Game development fundamentals",
-                    "Portfolio of 5+ projects"
-                ],
-                "is_published": True
-            },
-            {
-                "title": "Python for Young Coders",
-                "slug": "python-young-coders",
-                "summary": "Introduction to text-based programming with Python. Students learn syntax, logic, and problem-solving through engaging projects including games, animations, and creative coding.",
+                "title": "Python Programming Mastery",
+                "slug": "python-mastery",
+                "summary": "Comprehensive Python course for aspiring young developers. Master variables, functions, OOP, and build real applications. Curated for high-achieving students.",
                 "age_min": 9,
                 "age_max": 13,
                 "duration_weeks": 14,
-                "price": 25000,
+                "price": 175000,
                 "features": [
-                    "Python fundamentals & syntax",
-                    "Turtle graphics programming",
-                    "Basic data types & structures",
-                    "Functions and modular code",
-                    "Simple game development",
-                    "Interactive project portfolio"
+                    "Object-oriented programming (OOP)",
+                    "Data structures and algorithms",
+                    "Real-world application projects",
+                    "Code portfolio development",
+                    "Individual code review sessions",
+                    "Career pathway guidance"
                 ],
                 "is_published": True
             },
             {
-                "title": "Robotics & Engineering",
-                "slug": "robotics-engineering",
-                "summary": "Foundational principles of mechanical design, sensor integration, and autonomous systems. Students construct and program robots that solve real-world challenges using Arduino, sensors, and mechanical components.",
+                "title": "Robotics & Engineering Excellence",
+                "slug": "robotics-engineering-premium",
+                "summary": "Advanced robotics program combining mechanical engineering, embedded systems, and autonomous systems. Perfect for competitive robotics preparation.",
                 "age_min": 10,
                 "age_max": 14,
-                "duration_weeks": 12,
-                "price": 28000,
+                "duration_weeks": 14,
+                "price": 185000,
                 "features": [
-                    "Arduino programming fundamentals",
-                    "Sensor integration & electronics",
-                    "Mechanical design principles",
-                    "Problem-solving methodology",
-                    "Team collaboration projects",
-                    "Competition preparation"
+                    "Professional Arduino/Microcontroller boards",
+                    "Advanced sensor integration",
+                    "Mechanical design CAD software",
+                    "Robotics competition coaching",
+                    "State-of-the-art maker labs",
+                    "Internship opportunities"
                 ],
                 "is_published": True
             },
             {
-                "title": "Web Development Foundations",
-                "slug": "web-development-foundations",
-                "summary": "Learn to build modern websites using HTML, CSS, and JavaScript. Students create responsive, interactive web pages and deploy their first live websites.",
+                "title": "Web Development Foundations (Premium)",
+                "slug": "web-development-premium",
+                "summary": "Professional web development bootcamp covering modern tech stack. Build real, deployed websites. Designed for future full-stack developers.",
                 "age_min": 10,
                 "age_max": 14,
-                "duration_weeks": 12,
-                "price": 24000,
+                "duration_weeks": 14,
+                "price": 165000,
                 "features": [
-                    "HTML5 & CSS3 mastery",
-                    "JavaScript fundamentals",
-                    "Responsive web design",
-                    "Interactive elements & animations",
-                    "Version control with Git",
-                    "Live project deployment"
+                    "HTML5, CSS3, JavaScript mastery",
+                    "React fundamentals",
+                    "Responsive design patterns",
+                    "Live project deployment",
+                    "Git/GitHub version control",
+                    "Client project simulation"
                 ],
                 "is_published": True
             },
             {
-                "title": "Digital Innovation",
-                "slug": "digital-innovation",
-                "summary": "From concept to creation—students master the complete innovation cycle. App development, 3D design, and entrepreneurial thinking converge in this comprehensive program.",
+                "title": "Digital Innovation Lab",
+                "slug": "digital-innovation-lab",
+                "summary": "Hands-on innovation course covering app development, 3D design, digital prototyping, and entrepreneurial thinking. Build and pitch ideas.",
                 "age_min": 11,
                 "age_max": 15,
-                "duration_weeks": 10,
-                "price": 26000,
+                "duration_weeks": 12,
+                "price": 155000,
                 "features": [
-                    "Mobile app development basics",
-                    "3D design & printing",
+                    "Mobile app development (No-Code & Low-Code)",
+                    "3D design and CAD software",
                     "UI/UX fundamentals",
-                    "Entrepreneurial thinking",
-                    "Product prototyping",
-                    "Pitch presentation skills"
+                    "Business pitch development",
+                    "Prototype to presentation",
+                    "Innovation fair participation"
                 ],
                 "is_published": True
             },
-            
-            # === ADVANCED TIER (Ages 13-18) ===
+
+            # === ADVANCED TIER (Ages 13-18) - PREMIUM ===
             {
                 "title": "Python Advanced Programming",
-                "slug": "python-advanced-programming",
-                "summary": "Deep dive into Python with object-oriented programming, data structures, algorithms, and real-world applications. Students build complex projects and learn professional development practices.",
+                "slug": "python-advanced",
+                "summary": "Deep dive into professional Python development. Object-oriented design, data structures, algorithms, API development. Perfect for competitive programming.",
                 "age_min": 12,
                 "age_max": 16,
                 "duration_weeks": 16,
-                "price": 30000,
+                "price": 225000,
                 "features": [
-                    "Object-oriented programming",
-                    "Data structures & algorithms",
-                    "File handling & databases",
-                    "API integration",
-                    "Testing & debugging",
-                    "Professional project portfolio"
+                    "Advanced OOP and design patterns",
+                    "Data structures and algorithms",
+                    "RESTful API development",
+                    "Database design and SQL",
+                    "Testing and debugging techniques",
+                    "Professional code portfolio"
                 ],
                 "is_published": True
             },
             {
                 "title": "Artificial Intelligence & Machine Learning",
-                "slug": "artificial-intelligence",
-                "summary": "Comprehensive exploration of machine learning, neural networks, and ethical AI. Students develop applications with genuine utility and social impact using Python and modern AI frameworks.",
+                "slug": "ai-machine-learning",
+                "summary": "Comprehensive AI/ML course exploring neural networks, computer vision, and NLP. Real-world projects with TensorFlow and scikit-learn.",
                 "age_min": 13,
                 "age_max": 17,
-                "duration_weeks": 16,
-                "price": 35000,
+                "duration_weeks": 18,
+                "price": 295000,
                 "features": [
-                    "Python for data science",
                     "Machine learning fundamentals",
-                    "Neural networks & deep learning",
+                    "Neural networks and deep learning",
                     "Computer vision projects",
                     "Natural language processing",
-                    "AI ethics & responsibility"
+                    "TensorFlow and PyTorch",
+                    "Kaggle competition preparation"
                 ],
                 "is_published": True
             },
             {
                 "title": "Full-Stack Web Development",
                 "slug": "fullstack-web-development",
-                "summary": "Professional web development from front-end to back-end. Master React, Node.js, databases, and deployment. Build and launch complete web applications.",
+                "summary": "Professional full-stack course covering React, Node.js, databases, and deployment. Build and deploy complete web applications.",
                 "age_min": 14,
                 "age_max": 18,
                 "duration_weeks": 18,
-                "price": 38000,
+                "price": 285000,
                 "features": [
-                    "React & modern JavaScript",
-                    "Node.js & Express backend",
-                    "Database design & SQL",
-                    "RESTful API development",
-                    "Authentication & security",
-                    "Cloud deployment & DevOps"
+                    "React and modern JavaScript",
+                    "Node.js and Express backend",
+                    "MongoDB and PostgreSQL",
+                    "RESTful and GraphQL APIs",
+                    "Cloud deployment (AWS/Heroku)",
+                    "Freelance-ready portfolio projects"
                 ],
                 "is_published": True
             },
             {
-                "title": "Mobile App Development",
+                "title": "Mobile App Development (iOS & Android)",
                 "slug": "mobile-app-development",
-                "summary": "Create professional iOS and Android applications using React Native. Learn mobile UI/UX design, app architecture, and publish apps to app stores.",
+                "summary": "Build professional iOS and Android apps using React Native. Learn app architecture, UI/UX patterns, and app store deployment.",
                 "age_min": 13,
                 "age_max": 18,
                 "duration_weeks": 16,
-                "price": 36000,
+                "price": 265000,
                 "features": [
                     "React Native fundamentals",
-                    "Mobile UI/UX design patterns",
-                    "Native device features",
-                    "State management",
-                    "App store deployment",
-                    "Portfolio of published apps"
+                    "iOS and Android specific features",
+                    "App store submission process",
+                    "User authentication and databases",
+                    "API integration",
+                    "Published app portfolio"
                 ],
                 "is_published": True
             },
             {
                 "title": "Game Development with Unity",
                 "slug": "game-development-unity",
-                "summary": "Professional game development using Unity and C#. Create 2D and 3D games with physics, AI, and multiplayer features. Build a complete game portfolio.",
+                "summary": "Professional game development using Unity and C#. Create 2D/3D games, physics engines, AI, and multiplayer features.",
                 "age_min": 12,
                 "age_max": 17,
                 "duration_weeks": 16,
-                "price": 34000,
+                "price": 245000,
                 "features": [
                     "Unity engine mastery",
                     "C# programming for games",
-                    "2D & 3D game mechanics",
-                    "Physics & collision systems",
+                    "2D and 3D game mechanics",
+                    "Physics and collision systems",
                     "Game AI programming",
-                    "Published game projects"
+                    "Game submission and publishing"
                 ],
                 "is_published": True
             },
             {
-                "title": "Cybersecurity Foundations",
-                "slug": "cybersecurity-foundations",
-                "summary": "Introduction to ethical hacking, network security, and digital forensics. Learn to identify vulnerabilities, secure systems, and understand the landscape of modern cybersecurity.",
-                "age_min": 14,
-                "age_max": 18,
-                "duration_weeks": 14,
-                "price": 32000,
-                "features": [
-                    "Network security fundamentals",
-                    "Ethical hacking principles",
-                    "Cryptography basics",
-                    "Penetration testing",
-                    "Security best practices",
-                    "Capture the Flag competitions"
-                ],
-                "is_published": True
-            },
-            
-            # === ELITE/RESEARCH TIER (Ages 15-18) ===
-            {
-                "title": "Advanced Research Track",
-                "slug": "advanced-research",
-                "summary": "For exceptional students seeking mastery. Independent research projects mentored by industry professionals and academic partners. Students tackle real-world problems with cutting-edge solutions.",
-                "age_min": 15,
-                "age_max": 18,
-                "duration_weeks": 20,
-                "price": 45000,
-                "features": [
-                    "Independent research methodology",
-                    "Scientific paper writing",
-                    "Data analysis & statistics",
-                    "Industry mentor pairing",
-                    "Conference presentation prep",
-                    "University application support"
-                ],
-                "is_published": True
-            },
-            {
-                "title": "Data Science & Analytics",
-                "slug": "data-science-analytics",
-                "summary": "Master data analysis, visualization, and machine learning using Python, pandas, and modern data science tools. Work with real datasets to extract insights and build predictive models.",
+                "title": "Cybersecurity & Ethical Hacking",
+                "slug": "cybersecurity-hacking",
+                "summary": "Comprehensive cybersecurity course covering network security, penetration testing, and ethical hacking. Hands-on labs and CTF competitions.",
                 "age_min": 14,
                 "age_max": 18,
                 "duration_weeks": 16,
-                "price": 36000,
+                "price": 235000,
                 "features": [
-                    "Python data analysis stack",
-                    "Statistical analysis",
-                    "Data visualization",
-                    "Machine learning pipelines",
-                    "Big data fundamentals",
-                    "Real-world case studies"
+                    "Network security fundamentals",
+                    "Penetration testing methodology",
+                    "Cryptography and encryption",
+                    "Capture-the-Flag competitions",
+                    "Hands-on lab environments",
+                    "Security certification prep"
                 ],
                 "is_published": True
             },
-            
-            # === SPECIALIZED TRACKS ===
+
+            # === ELITE TIER - RESEARCH & MENTORSHIP ===
             {
-                "title": "Individual Mentorship Program",
-                "slug": "individual-mentorship",
-                "summary": "Personalized 1-on-1 instruction tailored to your child's interests, goals, and learning pace. Custom curriculum designed around specific projects, competitions, or skill development.",
+                "title": "Advanced Research Track",
+                "slug": "advanced-research",
+                "summary": "For exceptional students pursuing mastery. Independent research mentored by industry leaders and academics. Tackle real-world STEM challenges.",
+                "age_min": 15,
+                "age_max": 18,
+                "duration_weeks": 20,
+                "price": 385000,
+                "features": [
+                    "1-on-1 research mentorship",
+                    "Industry mentor pairing",
+                    "Academic publication support",
+                    "Conference presentation prep",
+                    "University application guidance",
+                    "Internship coordination"
+                ],
+                "is_published": True
+            },
+            {
+                "title": "Data Science & Analytics Intensive",
+                "slug": "data-science-analytics",
+                "summary": "Master data analysis, statistics, machine learning, and visualization. Work with real datasets and build predictive models.",
+                "age_min": 14,
+                "age_max": 18,
+                "duration_weeks": 16,
+                "price": 255000,
+                "features": [
+                    "Python data science stack",
+                    "Statistical analysis methods",
+                    "Data visualization mastery",
+                    "Machine learning pipelines",
+                    "Real-world dataset projects",
+                    "Tableau and Power BI"
+                ],
+                "is_published": True
+            },
+
+            # === SPECIALIZED PREMIUM PROGRAMS ===
+            {
+                "title": "VIP 1-on-1 Mentorship",
+                "slug": "vip-mentorship",
+                "summary": "Completely personalized 1-on-1 instruction tailored to your child's unique interests and goals. Custom curriculum, flexible scheduling, elite instructor pairing.",
                 "age_min": 8,
                 "age_max": 18,
                 "duration_weeks": 8,
-                "price": 50000,
+                "price": 450000,
                 "features": [
                     "Personalized curriculum design",
-                    "One-on-one instruction",
-                    "Flexible scheduling",
+                    "Elite instructor pairing",
+                    "Flexible scheduling (evenings/weekends)",
                     "Custom project development",
-                    "Competition preparation",
-                    "Portfolio building support"
+                    "Unlimited email support",
+                    "College/career pathway planning"
                 ],
                 "is_published": True
             },
             {
-                "title": "Competition Prep: Olympiads & Hackathons",
+                "title": "Competition Prep: International Olympiads",
                 "slug": "competition-prep",
-                "summary": "Intensive preparation for international STEM competitions including robotics olympiads, coding competitions, and hackathons. Expert coaching and practice with past competition challenges.",
+                "summary": "Intensive preparation for International STEM Olympiads, robotics competitions, and hackathons. Expert coaching from competition veterans.",
                 "age_min": 10,
                 "age_max": 18,
-                "duration_weeks": 12,
-                "price": 32000,
+                "duration_weeks": 14,
+                "price": 195000,
                 "features": [
-                    "Competition strategy training",
-                    "Past problem solving",
-                    "Team collaboration skills",
-                    "Time management under pressure",
-                    "Technical interview prep",
-                    "Hackathon participation"
+                    "Past competition problem solving",
+                    "Olympiad-specific strategies",
+                    "Team collaboration coaching",
+                    "Time management training",
+                    "Mock competitions",
+                    "International competition travel support"
+                ],
+                "is_published": True
+            },
+            {
+                "title": "Summer Immersion Boot Camp (4 Weeks)",
+                "slug": "summer-bootcamp",
+                "summary": "Intensive 4-week residential summer program combining multiple tech tracks. Accelerated learning, project showcases, and competition preparation.",
+                "age_min": 12,
+                "age_max": 17,
+                "duration_weeks": 4,
+                "price": 395000,
+                "features": [
+                    "Multi-track curriculum rotation",
+                    "4 days per week intensive sessions",
+                    "Professional-grade projects",
+                    "Industry guest speakers",
+                    "Showcase and competition",
+                    "Networking with peers and mentors"
+                ],
+                "is_published": True
+            },
+            {
+                "title": "Corporate Training & Workshops (Custom)",
+                "slug": "corporate-training",
+                "summary": "Custom STEM programs designed for corporate and school teams. From 2-hour workshops to multi-day immersions. Tailored to organizational goals.",
+                "age_min": 8,
+                "age_max": 25,
+                "duration_weeks": 2,
+                "price": 500000,
+                "features": [
+                    "Fully customized curriculum",
+                    "On-site or at STEMForge facility",
+                    "Multiple cohorts available",
+                    "Post-program support",
+                    "Participant certificates",
+                    "Impact assessment and reporting"
                 ],
                 "is_published": True
             },
