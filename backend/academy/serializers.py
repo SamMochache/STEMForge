@@ -17,7 +17,10 @@ class ProgramSerializer(serializers.ModelSerializer):
 class InstructorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Instructor
-        fields = '__all__'
+        fields = [
+            'id', 'full_name', 'title', 'bio', 'photo', 
+            'expertise', 'experience', 'education', 'email', 'location'
+        ]
 
 class RegistrationSerializer(serializers.ModelSerializer):
     program = serializers.PrimaryKeyRelatedField(queryset=Program.objects.filter(is_published=True))

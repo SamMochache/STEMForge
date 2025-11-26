@@ -1,4 +1,4 @@
-# backend/academy/models.py
+# backend/academy/models.py - Updated Instructor Model
 from django.db import models
 from django.utils.text import slugify
 
@@ -60,6 +60,32 @@ class Instructor(TimestampedModel):
     bio = models.TextField(blank=True)
     photo = models.ImageField(upload_to='instructors/', blank=True, null=True)
     title = models.CharField(max_length=80, blank=True)
+    
+    # NEW FIELDS - Add these
+    expertise = models.JSONField(
+        default=list, 
+        blank=True,
+        help_text="List of skills/expertise areas (e.g., ['Python', 'Machine Learning', 'AI'])"
+    )
+    experience = models.CharField(
+        max_length=50, 
+        blank=True,
+        help_text="Years of experience (e.g., '12+ years')"
+    )
+    education = models.CharField(
+        max_length=150, 
+        blank=True,
+        help_text="Education background (e.g., 'PhD Computer Science - MIT')"
+    )
+    email = models.EmailField(blank=True)
+    location = models.CharField(
+        max_length=100, 
+        blank=True,
+        default='Nairobi, Kenya'
+    )
+
+    class Meta:
+        ordering = ['full_name']
 
     def __str__(self):
         return self.full_name
