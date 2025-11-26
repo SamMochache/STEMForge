@@ -1,14 +1,18 @@
+# backend/academy/serializers.py
 from rest_framework import serializers
 from .models import Program, Registration, Booking, GalleryItem, BlogPost, Instructor
 
 class ProgramSerializer(serializers.ModelSerializer):
+    category_display = serializers.CharField(source='get_category_display', read_only=True)
+    
     class Meta:
         model = Program
         fields = [
-            'id','title','slug','summary','age_min','age_max','duration_weeks',
-            'price','features','hero_image','is_published'
+            'id', 'title', 'slug', 'summary', 'category', 'category_display',
+            'age_min', 'age_max', 'duration_weeks', 'price', 'features', 
+            'hero_image', 'is_published'
         ]
-        read_only_fields = ['slug']
+        read_only_fields = ['slug', 'category_display']
 
 class InstructorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,13 +21,14 @@ class InstructorSerializer(serializers.ModelSerializer):
 
 class RegistrationSerializer(serializers.ModelSerializer):
     program = serializers.PrimaryKeyRelatedField(queryset=Program.objects.filter(is_published=True))
+    
     class Meta:
         model = Registration
         fields = [
-            'id','parent_name','parent_email','parent_phone','child_name','child_age',
-            'program','preferred_schedule','notes','status','created_at'
+            'id', 'parent_name', 'parent_email', 'parent_phone', 'child_name', 'child_age',
+            'program', 'preferred_schedule', 'notes', 'status', 'created_at'
         ]
-        read_only_fields = ['status','created_at','id']
+        read_only_fields = ['status', 'created_at', 'id']
 
     def validate_parent_phone(self, value):
         digits = ''.join(ch for ch in value if ch.isdigit())
@@ -41,7 +46,7 @@ class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
         fields = '__all__'
-        read_only_fields = ['is_confirmed','created_at']
+        read_only_fields = ['is_confirmed', 'created_at']
 
 class GallerySerializer(serializers.ModelSerializer):
     class Meta:
@@ -51,4 +56,4 @@ class GallerySerializer(serializers.ModelSerializer):
 class BlogSerializer(serializers.ModelSerializer):
     class Meta:
         model = BlogPost
-        fields = ['id','title','slug','excerpt','content','hero','is_published','published_at']
+        fields = ['id', 'title', 'slug', 'excerpt', 'content', 'hero', 'is_published', 'published_at']

@@ -1,3 +1,4 @@
+# backend/academy/models.py
 from django.db import models
 from django.utils.text import slugify
 
@@ -12,9 +13,24 @@ class TimestampedModel(models.Model):
         abstract = True
 
 class Program(TimestampedModel):
+    # Category choices
+    CATEGORY_CHOICES = [
+        ('bootstrap', 'Bootstrap (Free)'),
+        ('beginner', 'Beginner'),
+        ('intermediate', 'Intermediate'),
+        ('advanced', 'Advanced'),
+        ('elite', 'Elite'),
+    ]
+
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=220, unique=True, blank=True)
     summary = models.TextField()
+    category = models.CharField(
+        max_length=20, 
+        choices=CATEGORY_CHOICES, 
+        default='intermediate',
+        db_index=True
+    )
     age_min = models.PositiveSmallIntegerField(null=True, blank=True)
     age_max = models.PositiveSmallIntegerField(null=True, blank=True)
     duration_weeks = models.PositiveSmallIntegerField(default=12)
@@ -28,6 +44,7 @@ class Program(TimestampedModel):
         indexes = [
             models.Index(fields=['slug']),
             models.Index(fields=['is_published']),
+            models.Index(fields=['category']),
         ]
 
     def save(self, *args, **kwargs):
@@ -36,7 +53,7 @@ class Program(TimestampedModel):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.title
+        return f"{self.title} ({self.get_category_display()})"
 
 class Instructor(TimestampedModel):
     full_name = models.CharField(max_length=120)

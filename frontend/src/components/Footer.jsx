@@ -1,4 +1,4 @@
-// frontend/src/components/Footer.jsx - UPDATED PREMIUM VERSION
+// frontend/src/components/Footer.jsx - FIXED VERSION
 import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin, Linkedin, Twitter, Instagram, Youtube, ArrowRight } from 'lucide-react';
 
@@ -6,6 +6,16 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const footerSections = [
+    {
+      title: 'Programs',
+      links: [
+        { label: 'All Programs', path: '/programs' },
+        { label: 'Bootstrap Programs', path: '/programs' },
+        { label: 'Summer Camps', path: '/programs' },
+        { label: 'School Visits', path: '/contact' },
+        { label: 'Custom Training', path: '/contact' },
+      ],
+    },
     {
       title: 'Company',
       links: [
@@ -17,33 +27,22 @@ const Footer = () => {
       ],
     },
     {
-      title: 'Programs',
-      links: [
-        { label: 'All Programs', path: '/programs' },
-        { label: 'For Schools', path: '/contact' },
-        { label: 'Summer Camps', path: '/programs' },
-        { label: 'Scholarships', path: '/scholarships' },
-        { label: 'FAQ', path: '/faq' },
-      ],
-    },
-    {
       title: 'Resources',
       links: [
+        { label: 'FAQ', path: '/faq' },
         { label: 'Learning Guides', path: '/resources' },
-        { label: 'Parent Guide', path: '/resources' },
-        { label: 'Student Success', path: '/resources' },
-        { label: 'Alumni Network', path: '/resources' },
-        { label: 'Job Board', path: '/resources' },
+        { label: 'Scholarships', path: '/scholarships' },
+        { label: 'Contact Us', path: '/contact' },
+        { label: 'Sitemap', path: '/' },
       ],
     },
     {
-      title: 'Support',
+      title: 'Legal',
       links: [
-        { label: 'Contact Us', path: '/contact' },
-        { label: 'Help Center', path: '/faq' },
-        { label: 'Schedule a Call', path: '/' },
-        { label: 'Report an Issue', path: '/contact' },
-        { label: 'Feedback', path: '/contact' },
+        { label: 'Privacy Policy', path: '/privacy' },
+        { label: 'Terms of Service', path: '/terms' },
+        { label: 'Cookie Policy', path: '/cookies' },
+        { label: 'Report Abuse', path: '/contact' },
       ],
     },
   ];
@@ -86,9 +85,9 @@ const Footer = () => {
       <div className="px-8 py-16">
         <div className="max-w-7xl mx-auto">
           {/* Footer Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-6 gap-8 mb-16">
+          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8 mb-16">
             {/* Brand Column */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-1">
               <Link to="/" className="inline-block mb-6">
                 <h2 className="text-2xl tracking-tight">
                   <span className="font-light">STEM</span>
@@ -96,35 +95,35 @@ const Footer = () => {
                 </h2>
               </Link>
 
-              <p className="text-neutral-400 font-light mb-6 max-w-xs leading-relaxed">
-                Elite STEM education for Africa's most ambitious young minds. Where brilliance is cultivated and innovation thrives.
+              <p className="text-neutral-400 font-light mb-6 max-w-xs leading-relaxed text-sm">
+                Elite STEM education for Africa's most ambitious young minds.
               </p>
 
               {/* Contact Info */}
-              <div className="space-y-4 text-sm text-neutral-400">
+              <div className="space-y-3 text-sm text-neutral-400">
                 <div className="flex items-start gap-3">
-                  <MapPin size={16} className="flex-shrink-0 mt-1 text-blue-500" />
+                  <MapPin size={14} className="flex-shrink-0 mt-1 text-blue-500" />
                   <div>
                     <p className="font-medium text-white">Westlands, Nairobi</p>
-                    <p>Kenya</p>
+                    <p className="text-xs">Kenya</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <Phone size={16} className="flex-shrink-0 text-blue-500" />
+                  <Phone size={14} className="flex-shrink-0 text-blue-500" />
                   <a
                     href="tel:+254740532120"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-white transition-colors text-xs"
                   >
                     +254 740 532 120
                   </a>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <Mail size={16} className="flex-shrink-0 text-blue-500" />
+                  <Mail size={14} className="flex-shrink-0 text-blue-500" />
                   <a
                     href="mailto:admissions@stemforge.co.ke"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-white transition-colors text-xs"
                   >
                     admissions@stemforge.co.ke
                   </a>
@@ -132,7 +131,7 @@ const Footer = () => {
               </div>
 
               {/* Social Links */}
-              <div className="flex gap-4 mt-8">
+              <div className="flex gap-3 mt-6">
                 {socialLinks.map((social) => {
                   const Icon = social.icon;
                   return (
@@ -145,7 +144,7 @@ const Footer = () => {
                       className="w-10 h-10 bg-neutral-800 rounded-full flex items-center justify-center hover:bg-blue-600 transition-colors"
                       aria-label={social.label}
                     >
-                      <Icon size={18} />
+                      <Icon size={16} />
                     </a>
                   );
                 })}
@@ -200,17 +199,12 @@ const Footer = () => {
               </div>
               <div>
                 <h4 className="text-xs tracking-widest uppercase text-neutral-300 font-medium mb-2">
-                  Quick Links
+                  Status
                 </h4>
-                <div className="flex gap-4 text-sm">
-                  <Link to="/" className="text-neutral-400 hover:text-white transition-colors">
-                    Sitemap
-                  </Link>
-                  <span className="text-neutral-600">•</span>
-                  <Link to="/" className="text-neutral-400 hover:text-white transition-colors">
-                    Status
-                  </Link>
-                </div>
+                <p className="text-neutral-400 text-sm font-light">
+                  <Link to="/" className="hover:text-white transition-colors">System Status</Link><br/>
+                  <a href="mailto:support@stemforge.co.ke" className="hover:text-white transition-colors">Report Issue</a>
+                </p>
               </div>
             </div>
 
@@ -219,7 +213,7 @@ const Footer = () => {
               <p className="text-neutral-500 text-xs">
                 © {currentYear} STEMForge Academy. All rights reserved. | Est. 2024
               </p>
-              <div className="flex gap-8 text-xs">
+              <div className="flex gap-6 text-xs flex-wrap justify-center">
                 <Link
                   to="/privacy"
                   className="text-neutral-500 hover:text-neutral-300 transition-colors"
