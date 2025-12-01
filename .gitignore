@@ -9,3 +9,6 @@ migrations
 
 pycache
 __pycache__
+
+logfiles
+logs
