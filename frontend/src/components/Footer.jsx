@@ -33,7 +33,7 @@ const Footer = () => {
         { label: 'Learning Guides', path: '/resources' },
         { label: 'Scholarships', path: '/scholarships' },
         { label: 'Contact Us', path: '/contact' },
-        { label: 'Sitemap', path: '/' },
+        { label: 'Sitemap', path: '/sitemap' },
       ],
     },
     {
@@ -42,7 +42,7 @@ const Footer = () => {
         { label: 'Privacy Policy', path: '/privacy' },
         { label: 'Terms of Service', path: '/terms' },
         { label: 'Cookie Policy', path: '/cookies' },
-        { label: 'Report Abuse', path: '/contact' },
+        { label: 'Report Abuse', path: '/report' },
       ],
     },
   ];

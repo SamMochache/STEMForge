@@ -18,6 +18,7 @@ import TermsPage from './pages/TermsPage';
 import PrivacyPage from './pages/PrivacyPage';
 import CookiesPage from './pages/CookiesPage';
 import ReportAbusePage from './pages/ReportAbusePage';
+import SitemapPage from './pages/SitemapPage';
 
 // Modals
 import ApplicationModal from './components/ApplicationModal';
@@ -127,6 +128,7 @@ function App() {
           <Route path="/resources" element={<ResourcesPage />} />
           <Route path="/press" element={<PressPage />} />
           <Route path="/scholarships" element={<ScholarshipsPage />} />
+          <Route path='/sitemap' element={<SitemapPage/>}/>
           
           {/* Legal */}
           <Route path="/privacy" element={<PrivacyPage />} />
