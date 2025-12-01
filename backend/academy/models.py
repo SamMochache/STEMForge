@@ -152,3 +152,56 @@ class BlogPost(TimestampedModel):
         if not self.slug:
             self.slug = slugify(self.title)[:200]
         super().save(*args, **kwargs)
+
+# Add to backend/academy/models.py
+
+class Payment(TimestampedModel):
+    """
+    Track M-Pesa payments for registrations
+    """
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+        ('cancelled', 'Cancelled'),
+    ]
+    
+    registration = models.ForeignKey(
+        Registration, 
+        on_delete=models.PROTECT, 
+        related_name='payments'
+    )
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    phone_number = models.CharField(max_length=15)
+    
+    # M-Pesa transaction details
+    checkout_request_id = models.CharField(max_length=100, unique=True, db_index=True)
+    merchant_request_id = models.CharField(max_length=100, blank=True)
+    mpesa_receipt_number = models.CharField(max_length=50, blank=True, null=True)
+    
+    # Status tracking
+    status = models.CharField(
+        max_length=20, 
+        choices=STATUS_CHOICES, 
+        default='pending',
+        db_index=True
+    )
+    result_desc = models.TextField(blank=True)
+    
+    # Metadata
+    callback_received_at = models.DateTimeField(null=True, blank=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['checkout_request_id']),
+            models.Index(fields=['status']),
+            models.Index(fields=['registration', 'status']),
+        ]
+    
+    def __str__(self):
+        return f'Payment {self.id} - {self.registration.child_name} - {self.status}'
+    
+    @property
+    def is_successful(self):
+        return self.status == 'completed'

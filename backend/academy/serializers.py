@@ -1,6 +1,6 @@
 # backend/academy/serializers.py
 from rest_framework import serializers
-from .models import Program, Registration, Booking, GalleryItem, BlogPost, Instructor
+from .models import Payment, Program, Registration, Booking, GalleryItem, BlogPost, Instructor
 
 class ProgramSerializer(serializers.ModelSerializer):
     category_display = serializers.CharField(source='get_category_display', read_only=True)
@@ -60,3 +60,20 @@ class BlogSerializer(serializers.ModelSerializer):
     class Meta:
         model = BlogPost
         fields = ['id', 'title', 'slug', 'excerpt', 'content', 'hero', 'is_published', 'published_at']
+
+
+# Add to backend/academy/serializers.py
+
+class PaymentSerializer(serializers.ModelSerializer):
+    registration_id = serializers.IntegerField(source='registration.id', read_only=True)
+    program_title = serializers.CharField(source='registration.program.title', read_only=True)
+    
+    class Meta:
+        model = Payment
+        fields = [
+            'id', 'registration_id', 'program_title', 'amount', 
+            'phone_number', 'checkout_request_id', 'merchant_request_id',
+            'mpesa_receipt_number', 'status', 'result_desc', 
+            'created_at', 'callback_received_at'
+        ]
+        read_only_fields = ['id', 'created_at']
