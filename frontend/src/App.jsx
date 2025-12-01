@@ -14,38 +14,14 @@ import ContactPage from './pages/ContactPage';
 import AboutPage from './pages/AboutPage';
 import TeamPage from './pages/TeamPage';
 import { CareersPage, FAQPage } from './pages/CareersPage';
+import TermsPage from './pages/TermsPage';
+import PrivacyPage from './pages/PrivacyPage';
+import CookiesPage from './pages/CookiesPage';
+import ReportAbusePage from './pages/ReportAbusePage';
 
 // Modals
 import ApplicationModal from './components/ApplicationModal';
 import BookingModal from './components/BookingModal';
-
-// Placeholder pages (create these as needed)
-const PrivacyPage = () => (
-  <main className="pt-40 pb-20 px-8 max-w-5xl mx-auto">
-    <h1 className="text-4xl font-light text-neutral-900 mb-8">Privacy Policy</h1>
-    <p className="text-neutral-600 font-light leading-relaxed">
-      Privacy policy content coming soon. For now, contact admissions@stemforge.co.ke with privacy concerns.
-    </p>
-  </main>
-);
-
-const TermsPage = () => (
-  <main className="pt-40 pb-20 px-8 max-w-5xl mx-auto">
-    <h1 className="text-4xl font-light text-neutral-900 mb-8">Terms of Service</h1>
-    <p className="text-neutral-600 font-light leading-relaxed">
-      Terms of service content coming soon. For questions, email legal@stemforge.co.ke.
-    </p>
-  </main>
-);
-
-const CookiesPage = () => (
-  <main className="pt-40 pb-20 px-8 max-w-5xl mx-auto">
-    <h1 className="text-4xl font-light text-neutral-900 mb-8">Cookie Policy</h1>
-    <p className="text-neutral-600 font-light leading-relaxed">
-      Cookie policy content coming soon.
-    </p>
-  </main>
-);
 
 const ResourcesPage = () => (
   <main className="pt-40 pb-20 px-8 max-w-5xl mx-auto">
@@ -156,6 +132,7 @@ function App() {
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/cookies" element={<CookiesPage />} />
+          <Route path='/report' element={<ReportAbusePage/>}/>
           
           {/* 404 Fallback */}
           <Route 

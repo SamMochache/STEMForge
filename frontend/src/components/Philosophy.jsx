@@ -27,7 +27,7 @@ const Philosophy = () => (
           </p>
           <div className="pt-4">
             <a
-              href="#"
+              href="/about"
               className="inline-flex items-center gap-2 text-neutral-900 text-sm tracking-wide border-b border-neutral-900 pb-1 hover:opacity-60 transition-opacity"
             >
               Discover our approach

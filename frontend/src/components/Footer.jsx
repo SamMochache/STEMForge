@@ -232,12 +232,13 @@ const Footer = () => {
                 >
                   Cookie Policy
                 </Link>
-                <a
-                  href="mailto:legal@stemforge.co.ke"
+                
+                <Link
+                  to="/report"
                   className="text-neutral-500 hover:text-neutral-300 transition-colors"
                 >
                   Report Abuse
-                </a>
+                </Link>
               </div>
             </div>
           </div>

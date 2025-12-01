@@ -4,6 +4,7 @@ Django settings for core project.
 
 from pathlib import Path
 import os
+from django.conf import settings
 from dotenv import load_dotenv
 
 # Load .env file
@@ -125,3 +126,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 if DEBUG:
     REST_FRAMEWORK['DEFAULT_THROTTLE_CLASSES'] = []
     REST_FRAMEWORK['DEFAULT_THROTTLE_RATES'] = {}
+
+# backend/core/settings.py - ADD THESE LINES
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
