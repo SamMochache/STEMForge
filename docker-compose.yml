@@ -14,6 +14,21 @@ services:
     ports:
       - "5432:5432"
 
+  redis:
+    image: redis:7-alpine
+    container_name: stemforge_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   backend:
     build:
       context: ./backend
@@ -27,8 +42,26 @@ services:
       - "8000:8000"
     depends_on:
       - postgres
+      - redis
+    volumes:
+      - ./backend:/app
+
+  celery_worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: stemforge_backend
+    container_name: stemforge_celery
+    restart: always
+    env_file:
+      - .env
+    command: celery -A core worker --loglevel=info
+    depends_on:
+      - postgres
+      - redis
     volumes:
       - ./backend:/app
 
 volumes:
   postgres_data:
+  redis_data:

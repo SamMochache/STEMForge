@@ -1,19 +1,18 @@
 #!/bin/bash
 
 echo "Waiting for Postgres..."
-
-# Poll database before starting Django
 while ! nc -z $POSTGRES_HOST $POSTGRES_PORT; do
   sleep 0.2
 done
-
 echo "Postgres is available!"
 
-# Run migrations automatically (optional)
-python manage.py migrate --noinput
+echo "Waiting for Redis..."
+while ! nc -z ${REDIS_HOST:-redis} ${REDIS_PORT:-6379}; do
+  sleep 0.2
+done
+echo "Redis is available!"
 
-# Collect static files (optional)
+python manage.py migrate --noinput
 python manage.py collectstatic --noinput
 
-# Start Gunicorn server
 gunicorn core.wsgi:application --bind 0.0.0.0:8000
