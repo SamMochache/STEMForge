@@ -1,24 +1,37 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { X, ArrowRight, Check, Loader2 } from 'lucide-react';
 import api from '../services/api';
+
+const INITIAL_FORM = {
+  school_name: '',
+  contact_person: '',
+  email: '',
+  phone: '',
+  preferred_date: '',
+  message: '',
+};
 
 const BookingModal = ({ isOpen, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
-  
-  const [form, setForm] = useState({
-    school_name: '',
-    contact_person: '',
-    email: '',
-    phone: '',
-    preferred_date: '',
-    message: ''
-  });
+  const [form, setForm] = useState(INITIAL_FORM);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const parseApiError = (err) => {
+    if (err?.data && typeof err.data === 'object') {
+      return Object.entries(err.data)
+        .map(([key, val]) => {
+          const msg = Array.isArray(val) ? val.join(', ') : String(val);
+          return `${key}: ${msg}`;
+        })
+        .join('\n');
+    }
+    return err?.message || 'Something went wrong. Please try again.';
   };
 
   const handleSubmit = async (e) => {
@@ -29,51 +42,45 @@ const BookingModal = ({ isOpen, onClose }) => {
     try {
       await api.createBooking(form);
       setSuccess(true);
-      setForm({
-        school_name: '',
-        contact_person: '',
-        email: '',
-        phone: '',
-        preferred_date: '',
-        message: ''
-      });
+      setForm(INITIAL_FORM);
     } catch (err) {
-      console.error(err);
-      if (err.data) {
-        const messages = Object.entries(err.data)
-          .map(([key, val]) => `${key}: ${Array.isArray(val) ? val.join(', ') : val}`)
-          .join('\n');
-        setError(messages);
-      } else {
-        setError('Something went wrong. Please try again.');
-      }
+      setError(parseApiError(err));
     } finally {
       setLoading(false);
     }
   };
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setSuccess(false);
     setError(null);
     onClose();
-  };
+  }, [onClose]);
+
+  const today = new Date().toISOString().split('T')[0];
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={handleClose}
+        aria-label="Close booking modal"
       />
-      
+
       {/* Modal */}
-      <div className="relative bg-white w-full max-w-xl max-h-[90vh] overflow-y-auto">
+      <div
+        className="relative bg-white w-full max-w-xl max-h-[90vh] overflow-y-auto"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="booking-modal-title"
+      >
         {/* Close button */}
         <button
           onClick={handleClose}
           className="absolute top-6 right-6 text-neutral-400 hover:text-neutral-900 transition-colors"
+          aria-label="Close"
         >
           <X size={24} />
         </button>
@@ -88,7 +95,8 @@ const BookingModal = ({ isOpen, onClose }) => {
                 Booking Request Received
               </h2>
               <p className="text-neutral-600 font-light mb-8">
-                Thank you for your interest. Our team will contact you to confirm the details of your visit.
+                Thank you for your interest. Our team will contact you to confirm the details of
+                your visit.
               </p>
               <button
                 onClick={handleClose}
@@ -103,7 +111,10 @@ const BookingModal = ({ isOpen, onClose }) => {
                 <p className="text-neutral-400 text-sm tracking-widest uppercase mb-2">
                   School Visit
                 </p>
-                <h2 className="text-2xl md:text-3xl font-light text-neutral-900">
+                <h2
+                  id="booking-modal-title"
+                  className="text-2xl md:text-3xl font-light text-neutral-900"
+                >
                   Book a Visit
                 </h2>
                 <p className="text-neutral-600 font-light mt-3">
@@ -117,13 +128,17 @@ const BookingModal = ({ isOpen, onClose }) => {
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6" noValidate>
                 {/* School Name */}
                 <div>
-                  <label className="block text-xs tracking-widest uppercase text-neutral-400 mb-2">
+                  <label
+                    htmlFor="school_name"
+                    className="block text-xs tracking-widest uppercase text-neutral-400 mb-2"
+                  >
                     School / Institution Name *
                   </label>
                   <input
+                    id="school_name"
                     type="text"
                     name="school_name"
                     value={form.school_name}
@@ -135,10 +150,14 @@ const BookingModal = ({ isOpen, onClose }) => {
 
                 {/* Contact Person */}
                 <div>
-                  <label className="block text-xs tracking-widest uppercase text-neutral-400 mb-2">
+                  <label
+                    htmlFor="contact_person"
+                    className="block text-xs tracking-widest uppercase text-neutral-400 mb-2"
+                  >
                     Contact Person *
                   </label>
                   <input
+                    id="contact_person"
                     type="text"
                     name="contact_person"
                     value={form.contact_person}
@@ -148,31 +167,42 @@ const BookingModal = ({ isOpen, onClose }) => {
                   />
                 </div>
 
+                {/* Email + Phone */}
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-xs tracking-widest uppercase text-neutral-400 mb-2">
+                    <label
+                      htmlFor="booking_email"
+                      className="block text-xs tracking-widest uppercase text-neutral-400 mb-2"
+                    >
                       Email *
                     </label>
                     <input
+                      id="booking_email"
                       type="email"
                       name="email"
                       value={form.email}
                       onChange={handleChange}
                       required
+                      autoComplete="email"
                       className="w-full border border-neutral-200 px-4 py-3 text-neutral-900 focus:outline-none focus:border-neutral-400 transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs tracking-widest uppercase text-neutral-400 mb-2">
+                    <label
+                      htmlFor="booking_phone"
+                      className="block text-xs tracking-widest uppercase text-neutral-400 mb-2"
+                    >
                       Phone *
                     </label>
                     <input
+                      id="booking_phone"
                       type="tel"
                       name="phone"
                       value={form.phone}
                       onChange={handleChange}
                       required
-                      placeholder="+254..."
+                      placeholder="+254…"
+                      autoComplete="tel"
                       className="w-full border border-neutral-200 px-4 py-3 text-neutral-900 focus:outline-none focus:border-neutral-400 transition-colors"
                     />
                   </div>
@@ -180,31 +210,39 @@ const BookingModal = ({ isOpen, onClose }) => {
 
                 {/* Preferred Date */}
                 <div>
-                  <label className="block text-xs tracking-widest uppercase text-neutral-400 mb-2">
+                  <label
+                    htmlFor="preferred_date"
+                    className="block text-xs tracking-widest uppercase text-neutral-400 mb-2"
+                  >
                     Preferred Date
                   </label>
                   <input
+                    id="preferred_date"
                     type="date"
                     name="preferred_date"
                     value={form.preferred_date}
                     onChange={handleChange}
-                    min={new Date().toISOString().split('T')[0]}
+                    min={today}
                     className="w-full border border-neutral-200 px-4 py-3 text-neutral-900 focus:outline-none focus:border-neutral-400 transition-colors"
                   />
                 </div>
 
                 {/* Message */}
                 <div>
-                  <label className="block text-xs tracking-widest uppercase text-neutral-400 mb-2">
+                  <label
+                    htmlFor="booking_message"
+                    className="block text-xs tracking-widest uppercase text-neutral-400 mb-2"
+                  >
                     Additional Details
                   </label>
                   <textarea
+                    id="booking_message"
                     name="message"
                     value={form.message}
                     onChange={handleChange}
                     rows={3}
                     className="w-full border border-neutral-200 px-4 py-3 text-neutral-900 focus:outline-none focus:border-neutral-400 transition-colors resize-none"
-                    placeholder="Number of students, age group, specific interests..."
+                    placeholder="Number of students, age group, specific interests…"
                   />
                 </div>
 
@@ -217,7 +255,7 @@ const BookingModal = ({ isOpen, onClose }) => {
                   {loading ? (
                     <>
                       <Loader2 size={16} className="animate-spin" />
-                      Submitting...
+                      Submitting…
                     </>
                   ) : (
                     <>
