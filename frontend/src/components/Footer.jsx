@@ -66,14 +66,15 @@ const Footer = () => {
                 Get the latest on new programs, alumni stories, and STEM education insights.
               </p>
             </div>
+            // In Footer.jsx, find the newsletter flex div and replace:
             <div className="flex gap-2">
               <input
                 type="email"
                 placeholder="your@email.com"
-                className="flex-1 bg-neutral-800 border border-neutral-700 px-4 py-3 text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-600 transition-colors"
+                className="flex-1 min-w-0 bg-neutral-800 border border-neutral-700 px-4 py-3 ..."
               />
-              <button className="bg-blue-600 hover:bg-blue-700 px-6 py-3 transition-colors flex items-center gap-2">
-                <span className="text-sm tracking-wide">Subscribe</span>
+              <button className="flex-shrink-0 bg-blue-600 hover:bg-blue-700 px-6 py-3 ...">
+                <span className="text-sm tracking-wide hidden sm:inline">Subscribe</span>
                 <ArrowRight size={14} />
               </button>
             </div>

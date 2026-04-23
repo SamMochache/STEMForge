@@ -265,14 +265,12 @@ const AboutPage = ({ onApplyClick }) => {
         <div className="max-w-5xl mx-auto text-center">
           <h2 className="text-4xl font-light mb-6">Ready to Join Our Community?</h2>
           <p className="text-neutral-300 font-light text-lg mb-12 max-w-2xl mx-auto">
-            Whether you're a student ready to transform your STEM journey or an educator interested in partnering with us—let's build something extraordinary together.
+            Whether you're a student ready to transform your STEM journey or an educator
+            interested in partnering with us—let's build something extraordinary together.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
-              onClick={() => {
-                window.scrollTo(0, 0);
-                // Trigger application modal if available
-              }}
+              onClick={onApplyClick}
               className="bg-white text-neutral-900 px-10 py-4 text-sm tracking-wide hover:bg-neutral-100 transition-colors inline-flex items-center justify-center gap-2"
             >
               Apply Now

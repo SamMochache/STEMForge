@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { X, ArrowRight, Check, Loader2 } from 'lucide-react';
 import api from '../services/api';
+import { parseApiError } from '../utils/errorUtils';
 
 const INITIAL_FORM = {
   school_name: '',
@@ -22,17 +23,6 @@ const BookingModal = ({ isOpen, onClose }) => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const parseApiError = (err) => {
-    if (err?.data && typeof err.data === 'object') {
-      return Object.entries(err.data)
-        .map(([key, val]) => {
-          const msg = Array.isArray(val) ? val.join(', ') : String(val);
-          return `${key}: ${msg}`;
-        })
-        .join('\n');
-    }
-    return err?.message || 'Something went wrong. Please try again.';
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();

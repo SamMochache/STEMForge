@@ -1,17 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown } from 'lucide-react';
 
 const Navigation = ({ scrolled, onApplyClick }) => {
   const [open, setOpen] = useState(false);
+  const [companyOpen, setCompanyOpen] = useState(false);
+  const companyRef = useRef(null);
   const location = useLocation();
 
   const isHome = location.pathname === '/';
   const showDark = scrolled || !isHome;
 
-  // Close mobile menu on route change
+  // Close menus on route change
   useEffect(() => {
     setOpen(false);
+    setCompanyOpen(false);
   }, [location.pathname]);
 
   // Prevent body scroll when mobile menu is open
@@ -19,6 +22,18 @@ const Navigation = ({ scrolled, onApplyClick }) => {
     document.body.style.overflow = open ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [open]);
+
+  // Close Company dropdown on outside click
+  useEffect(() => {
+    if (!companyOpen) return;
+    const handler = (e) => {
+      if (companyRef.current && !companyRef.current.contains(e.target)) {
+        setCompanyOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [companyOpen]);
 
   const mainNav = [
     { name: 'Programs', path: '/programs' },
@@ -61,33 +76,45 @@ const Navigation = ({ scrolled, onApplyClick }) => {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-12">
           {mainNav.map((item) => (
-            <div key={item.name} className="relative group">
+            <div key={item.name} className="relative">
               {item.submenu ? (
-                <>
+                /* Company dropdown — click-based for mouse AND touch */
+                <div ref={companyRef}>
                   <button
+                    onClick={() => setCompanyOpen((prev) => !prev)}
                     className={`text-sm tracking-wide transition-colors flex items-center gap-1 ${
                       showDark
                         ? 'text-neutral-600 hover:text-neutral-900'
                         : 'text-white/80 hover:text-white'
                     }`}
                     aria-haspopup="true"
+                    aria-expanded={companyOpen}
                   >
                     {item.name}
-                    <ChevronDown size={14} className="opacity-50" aria-hidden="true" />
+                    <ChevronDown
+                      size={14}
+                      className={`opacity-50 transition-transform duration-200 ${
+                        companyOpen ? 'rotate-180' : ''
+                      }`}
+                      aria-hidden="true"
+                    />
                   </button>
-                  {/* Dropdown */}
-                  <div className="absolute left-0 top-full mt-2 w-48 bg-white border border-neutral-200 shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 translate-y-2 group-hover:translate-y-0 z-50">
-                    {item.submenu.map((subitem) => (
-                      <Link
-                        key={subitem.label}
-                        to={subitem.path}
-                        className="block px-4 py-3 text-sm text-neutral-700 hover:bg-neutral-50 transition-colors"
-                      >
-                        {subitem.label}
-                      </Link>
-                    ))}
-                  </div>
-                </>
+
+                  {companyOpen && (
+                    <div className="absolute left-0 top-full mt-2 w-48 bg-white border border-neutral-200 shadow-lg z-50">
+                      {item.submenu.map((subitem) => (
+                        <Link
+                          key={subitem.label}
+                          to={subitem.path}
+                          onClick={() => setCompanyOpen(false)}
+                          className="block px-4 py-3 text-sm text-neutral-700 hover:bg-neutral-50 transition-colors"
+                        >
+                          {subitem.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
               ) : (
                 <Link
                   to={item.path}
@@ -169,17 +196,10 @@ const Navigation = ({ scrolled, onApplyClick }) => {
               Apply Now
             </button>
 
-            {/* Mobile Footer Links */}
             <div className="pt-8 border-t border-neutral-100 space-y-2 text-xs text-neutral-600">
-              <Link to="/faq" className="block hover:text-neutral-900">
-                FAQ
-              </Link>
-              <Link to="/careers" className="block hover:text-neutral-900">
-                Careers
-              </Link>
-              <Link to="/contact" className="block hover:text-neutral-900">
-                Contact
-              </Link>
+              <Link to="/faq" className="block hover:text-neutral-900">FAQ</Link>
+              <Link to="/careers" className="block hover:text-neutral-900">Careers</Link>
+              <Link to="/contact" className="block hover:text-neutral-900">Contact</Link>
             </div>
           </div>
         </div>
