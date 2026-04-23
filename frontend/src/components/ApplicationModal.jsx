@@ -1,53 +1,66 @@
-// frontend/src/components/ApplicationModal.jsx - WITH PAYMENT FLOW
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { X, ArrowRight, Check, Loader2 } from 'lucide-react';
 import api from '../services/api';
 import PaymentModal from './PaymentModal';
+
+const INITIAL_FORM = {
+  parent_name: '',
+  parent_email: '',
+  parent_phone: '',
+  child_name: '',
+  child_age: '',
+  program: '',
+  preferred_schedule: '',
+  notes: '',
+};
 
 const ApplicationModal = ({ isOpen, onClose, selectedProgram }) => {
   const [programs, setPrograms] = useState([]);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
-  
-  // Payment flow state
   const [showPayment, setShowPayment] = useState(false);
   const [registrationData, setRegistrationData] = useState(null);
-  
-  const [form, setForm] = useState({
-    parent_name: '',
-    parent_email: '',
-    parent_phone: '',
-    child_name: '',
-    child_age: '',
-    program: '',
-    preferred_schedule: '',
-    notes: ''
-  });
+  const [form, setForm] = useState(INITIAL_FORM);
+
+  const resetModal = useCallback(() => {
+    setSuccess(false);
+    setError(null);
+    setShowPayment(false);
+    setRegistrationData(null);
+    setForm(INITIAL_FORM);
+  }, []);
 
   useEffect(() => {
-    if (isOpen) {
-      // Fetch programs for dropdown
-      api.getPrograms()
-        .then(data => setPrograms(data.results || data))
-        .catch(console.error);
-      
-      // Pre-select program if provided
-      if (selectedProgram) {
-        setForm(prev => ({ ...prev, program: selectedProgram.id }));
-      }
-      
-      // Reset state
-      setSuccess(false);
-      setError(null);
-      setShowPayment(false);
-      setRegistrationData(null);
+    if (!isOpen) return;
+
+    resetModal();
+
+    api
+      .getPrograms()
+      .then((data) => setPrograms(data.results || data))
+      .catch(() => setPrograms([]));
+
+    if (selectedProgram?.id) {
+      setForm((prev) => ({ ...prev, program: String(selectedProgram.id) }));
     }
-  }, [isOpen, selectedProgram]);
+  }, [isOpen, selectedProgram, resetModal]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const parseApiError = (err) => {
+    if (err?.data && typeof err.data === 'object') {
+      return Object.entries(err.data)
+        .map(([key, val]) => {
+          const msg = Array.isArray(val) ? val.join(', ') : String(val);
+          return `${key}: ${msg}`;
+        })
+        .join('\n');
+    }
+    return err?.message || 'Something went wrong. Please try again.';
   };
 
   const handleSubmit = async (e) => {
@@ -59,46 +72,20 @@ const ApplicationModal = ({ isOpen, onClose, selectedProgram }) => {
       const registration = await api.createRegistration({
         ...form,
         child_age: parseInt(form.child_age, 10),
-        program: parseInt(form.program, 10)
+        program: parseInt(form.program, 10),
       });
 
-      // Find the selected program details
-      const programDetails = programs.find(p => p.id === parseInt(form.program, 10));
+      const programDetails = programs.find((p) => p.id === parseInt(form.program, 10));
+      setForm(INITIAL_FORM);
 
-      // Check if program requires payment
       if (programDetails && programDetails.price > 0) {
-        // Store registration and show payment modal
-        setRegistrationData({
-          registration,
-          program: programDetails
-        });
+        setRegistrationData({ registration, program: programDetails });
         setShowPayment(true);
       } else {
-        // Free program - show success immediately
         setSuccess(true);
       }
-
-      // Reset form
-      setForm({
-        parent_name: '',
-        parent_email: '',
-        parent_phone: '',
-        child_name: '',
-        child_age: '',
-        program: '',
-        preferred_schedule: '',
-        notes: ''
-      });
     } catch (err) {
-      console.error(err);
-      if (err.data) {
-        const messages = Object.entries(err.data)
-          .map(([key, val]) => `${key}: ${Array.isArray(val) ? val.join(', ') : val}`)
-          .join('\n');
-        setError(messages);
-      } else {
-        setError('Something went wrong. Please try again.');
-      }
+      setError(parseApiError(err));
     } finally {
       setLoading(false);
     }
@@ -106,7 +93,7 @@ const ApplicationModal = ({ isOpen, onClose, selectedProgram }) => {
 
   const handlePaymentClose = () => {
     setShowPayment(false);
-    setSuccess(true); // Show success after payment modal closes
+    setSuccess(true);
   };
 
   if (!isOpen) return null;
@@ -115,17 +102,24 @@ const ApplicationModal = ({ isOpen, onClose, selectedProgram }) => {
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         {/* Backdrop */}
-        <div 
+        <div
           className="absolute inset-0 bg-black/60 backdrop-blur-sm"
           onClick={onClose}
+          aria-label="Close modal"
         />
-        
+
         {/* Modal */}
-        <div className="relative bg-white w-full max-w-xl max-h-[90vh] overflow-y-auto">
+        <div
+          className="relative bg-white w-full max-w-xl max-h-[90vh] overflow-y-auto"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="application-modal-title"
+        >
           {/* Close button */}
           <button
             onClick={onClose}
             className="absolute top-6 right-6 text-neutral-400 hover:text-neutral-900 transition-colors"
+            aria-label="Close"
           >
             <X size={24} />
           </button>
@@ -140,7 +134,8 @@ const ApplicationModal = ({ isOpen, onClose, selectedProgram }) => {
                   Application Received
                 </h2>
                 <p className="text-neutral-600 font-light mb-8">
-                  Thank you for your interest in STEMForge. Our admissions team will contact you within 48 hours.
+                  Thank you for your interest in STEMForge. Our admissions team will contact you
+                  within 48 hours.
                 </p>
                 <button
                   onClick={onClose}
@@ -155,7 +150,10 @@ const ApplicationModal = ({ isOpen, onClose, selectedProgram }) => {
                   <p className="text-neutral-400 text-sm tracking-widest uppercase mb-2">
                     Application
                   </p>
-                  <h2 className="text-2xl md:text-3xl font-light text-neutral-900">
+                  <h2
+                    id="application-modal-title"
+                    className="text-2xl md:text-3xl font-light text-neutral-900"
+                  >
                     Begin Your Journey
                   </h2>
                 </div>
@@ -166,59 +164,79 @@ const ApplicationModal = ({ isOpen, onClose, selectedProgram }) => {
                   </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  {/* Parent Info */}
+                <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+                  {/* Parent Name */}
                   <div>
-                    <label className="block text-xs tracking-widest uppercase text-neutral-400 mb-2">
+                    <label
+                      htmlFor="parent_name"
+                      className="block text-xs tracking-widest uppercase text-neutral-400 mb-2"
+                    >
                       Parent / Guardian Name *
                     </label>
                     <input
+                      id="parent_name"
                       type="text"
                       name="parent_name"
                       value={form.parent_name}
                       onChange={handleChange}
                       required
+                      autoComplete="name"
                       className="w-full border border-neutral-200 px-4 py-3 text-neutral-900 focus:outline-none focus:border-neutral-400 transition-colors"
                     />
                   </div>
 
+                  {/* Email + Phone */}
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-xs tracking-widest uppercase text-neutral-400 mb-2">
+                      <label
+                        htmlFor="parent_email"
+                        className="block text-xs tracking-widest uppercase text-neutral-400 mb-2"
+                      >
                         Email *
                       </label>
                       <input
+                        id="parent_email"
                         type="email"
                         name="parent_email"
                         value={form.parent_email}
                         onChange={handleChange}
                         required
+                        autoComplete="email"
                         className="w-full border border-neutral-200 px-4 py-3 text-neutral-900 focus:outline-none focus:border-neutral-400 transition-colors"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs tracking-widest uppercase text-neutral-400 mb-2">
+                      <label
+                        htmlFor="parent_phone"
+                        className="block text-xs tracking-widest uppercase text-neutral-400 mb-2"
+                      >
                         Phone *
                       </label>
                       <input
+                        id="parent_phone"
                         type="tel"
                         name="parent_phone"
                         value={form.parent_phone}
                         onChange={handleChange}
                         required
-                        placeholder="+254..."
+                        placeholder="+254…"
+                        autoComplete="tel"
                         className="w-full border border-neutral-200 px-4 py-3 text-neutral-900 focus:outline-none focus:border-neutral-400 transition-colors"
                       />
                     </div>
                   </div>
 
-                  {/* Child Info */}
+                  {/* Child Name + Age */}
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-xs tracking-widest uppercase text-neutral-400 mb-2">
+                      <label
+                        htmlFor="child_name"
+                        className="block text-xs tracking-widest uppercase text-neutral-400 mb-2"
+                      >
                         Child's Name *
                       </label>
                       <input
+                        id="child_name"
                         type="text"
                         name="child_name"
                         value={form.child_name}
@@ -228,10 +246,14 @@ const ApplicationModal = ({ isOpen, onClose, selectedProgram }) => {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs tracking-widest uppercase text-neutral-400 mb-2">
+                      <label
+                        htmlFor="child_age"
+                        className="block text-xs tracking-widest uppercase text-neutral-400 mb-2"
+                      >
                         Child's Age *
                       </label>
                       <input
+                        id="child_age"
                         type="number"
                         name="child_age"
                         value={form.child_age}
@@ -244,12 +266,16 @@ const ApplicationModal = ({ isOpen, onClose, selectedProgram }) => {
                     </div>
                   </div>
 
-                  {/* Program Selection */}
+                  {/* Program */}
                   <div>
-                    <label className="block text-xs tracking-widest uppercase text-neutral-400 mb-2">
+                    <label
+                      htmlFor="program"
+                      className="block text-xs tracking-widest uppercase text-neutral-400 mb-2"
+                    >
                       Program of Interest *
                     </label>
                     <select
+                      id="program"
                       name="program"
                       value={form.program}
                       onChange={handleChange}
@@ -257,20 +283,27 @@ const ApplicationModal = ({ isOpen, onClose, selectedProgram }) => {
                       className="w-full border border-neutral-200 px-4 py-3 text-neutral-900 focus:outline-none focus:border-neutral-400 transition-colors bg-white"
                     >
                       <option value="">Select a program</option>
-                      {programs.map(prog => (
+                      {programs.map((prog) => (
                         <option key={prog.id} value={prog.id}>
-                          {prog.title} {prog.price > 0 ? `- KSh ${prog.price.toLocaleString()}` : '- Free'}
+                          {prog.title}{' '}
+                          {prog.price > 0
+                            ? `– KSh ${prog.price.toLocaleString()}`
+                            : '– Free'}
                         </option>
                       ))}
                     </select>
                   </div>
 
-                  {/* Schedule Preference */}
+                  {/* Schedule */}
                   <div>
-                    <label className="block text-xs tracking-widest uppercase text-neutral-400 mb-2">
+                    <label
+                      htmlFor="preferred_schedule"
+                      className="block text-xs tracking-widest uppercase text-neutral-400 mb-2"
+                    >
                       Preferred Schedule
                     </label>
                     <select
+                      id="preferred_schedule"
                       name="preferred_schedule"
                       value={form.preferred_schedule}
                       onChange={handleChange}
@@ -285,16 +318,20 @@ const ApplicationModal = ({ isOpen, onClose, selectedProgram }) => {
 
                   {/* Notes */}
                   <div>
-                    <label className="block text-xs tracking-widest uppercase text-neutral-400 mb-2">
+                    <label
+                      htmlFor="notes"
+                      className="block text-xs tracking-widest uppercase text-neutral-400 mb-2"
+                    >
                       Additional Notes
                     </label>
                     <textarea
+                      id="notes"
                       name="notes"
                       value={form.notes}
                       onChange={handleChange}
                       rows={3}
                       className="w-full border border-neutral-200 px-4 py-3 text-neutral-900 focus:outline-none focus:border-neutral-400 transition-colors resize-none"
-                      placeholder="Any questions or special requirements..."
+                      placeholder="Any questions or special requirements…"
                     />
                   </div>
 
@@ -307,7 +344,7 @@ const ApplicationModal = ({ isOpen, onClose, selectedProgram }) => {
                     {loading ? (
                       <>
                         <Loader2 size={16} className="animate-spin" />
-                        Submitting...
+                        Submitting…
                       </>
                     ) : (
                       <>
