@@ -9,27 +9,34 @@ const JournalPage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const data = await api.getBlogPosts();
-        setPosts(data.results || data);
-      } catch (err) {
-        setError('Failed to load journal entries');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPosts();
+    let cancelled = false;
+
+    api
+      .getBlogPosts()
+      .then((data) => {
+        if (!cancelled) setPosts(data.results || data);
+      })
+      .catch(() => {
+        if (!cancelled) setError('Failed to load journal entries. Please try again later.');
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => { cancelled = true; };
   }, []);
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+    try {
+      return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+    } catch {
+      return '';
+    }
   };
 
   return (
@@ -37,9 +44,7 @@ const JournalPage = () => {
       <div className="max-w-7xl mx-auto px-8">
         {/* Header */}
         <div className="max-w-3xl mb-20">
-          <p className="text-neutral-400 text-sm tracking-widest uppercase mb-6">
-            Journal
-          </p>
+          <p className="text-neutral-400 text-sm tracking-widest uppercase mb-6">Journal</p>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-light text-neutral-900 leading-tight tracking-tight mb-8">
             Insights & Stories
           </h1>
@@ -50,12 +55,18 @@ const JournalPage = () => {
 
         {/* Posts */}
         {loading ? (
-          <div className="space-y-12">
+          <div className="space-y-0" aria-busy="true" aria-label="Loading posts">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="border-t border-neutral-200 pt-12 animate-pulse">
-                <div className="h-3 w-32 bg-neutral-200 mb-4" />
-                <div className="h-8 w-2/3 bg-neutral-200 mb-4" />
-                <div className="h-4 w-full bg-neutral-100" />
+              <div key={i} className="border-t border-neutral-200 py-12 animate-pulse">
+                <div className="grid md:grid-cols-12 gap-8">
+                  <div className="md:col-span-3">
+                    <div className="h-3 w-32 bg-neutral-200 rounded" />
+                  </div>
+                  <div className="md:col-span-7">
+                    <div className="h-8 w-2/3 bg-neutral-200 mb-4 rounded" />
+                    <div className="h-4 w-full bg-neutral-100 rounded" />
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -69,16 +80,16 @@ const JournalPage = () => {
           </div>
         ) : (
           <div className="space-y-0">
-            {posts.map((post, i) => (
-              <article 
-                key={post.id}
-                className="group border-t border-neutral-200 py-12 first:border-t-0"
-              >
+            {posts.map((post) => (
+              <article key={post.id} className="group border-t border-neutral-200 py-12">
                 <Link to={`/journal/${post.slug}`} className="block">
                   <div className="grid md:grid-cols-12 gap-8">
                     {/* Date */}
                     <div className="md:col-span-3">
-                      <time className="text-neutral-400 text-sm">
+                      <time
+                        dateTime={post.published_at}
+                        className="text-neutral-400 text-sm"
+                      >
                         {formatDate(post.published_at)}
                       </time>
                     </div>
@@ -89,7 +100,7 @@ const JournalPage = () => {
                         {post.title}
                       </h2>
                       {post.excerpt && (
-                        <p className="text-neutral-600 font-light leading-relaxed">
+                        <p className="text-neutral-600 font-light leading-relaxed line-clamp-3">
                           {post.excerpt}
                         </p>
                       )}
@@ -97,9 +108,10 @@ const JournalPage = () => {
 
                     {/* Arrow */}
                     <div className="md:col-span-2 flex md:justify-end items-start">
-                      <ArrowUpRight 
-                        size={20} 
-                        className="text-neutral-300 group-hover:text-neutral-900 transition-colors" 
+                      <ArrowUpRight
+                        size={20}
+                        className="text-neutral-300 group-hover:text-neutral-900 transition-colors"
+                        aria-hidden="true"
                       />
                     </div>
                   </div>
