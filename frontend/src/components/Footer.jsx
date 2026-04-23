@@ -66,7 +66,6 @@ const Footer = () => {
                 Get the latest on new programs, alumni stories, and STEM education insights.
               </p>
             </div>
-            // In Footer.jsx, find the newsletter flex div and replace:
             <div className="flex gap-2">
               <input
                 type="email"
