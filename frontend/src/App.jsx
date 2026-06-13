@@ -18,20 +18,14 @@ import PrivacyPage from './pages/PrivacyPage';
 import CookiesPage from './pages/CookiesPage';
 import ReportAbusePage from './pages/ReportAbusePage';
 import SitemapPage from './pages/SitemapPage';
+import ResourcesPage from './pages/ResourcesPage';
 
 // Modals
 import ApplicationModal from './components/ApplicationModal';
 import BookingModal from './components/BookingModal';
 
 // Placeholder pages
-const ResourcesPage = () => (
-  <main className="pt-40 pb-20 px-8 max-w-5xl mx-auto">
-    <h1 className="text-4xl font-light text-neutral-900 mb-8">Resources & Learning Guides</h1>
-    <p className="text-neutral-600 font-light leading-relaxed">
-      Free resources, guides, and webinars coming soon.
-    </p>
-  </main>
-);
+
 
 const ScholarshipsPage = () => (
   <main className="pt-40 pb-20 px-8 max-w-5xl mx-auto">
@@ -125,7 +119,7 @@ function AppContent() {
 
         {/* FAQ & Resources */}
         <Route path="/faq" element={<FAQPage />} />
-        <Route path="/resources" element={<ResourcesPage />} />
+        <Route path="/resources" element={<ResourcesPage onApplyClick={openApplication} />} />
         <Route path="/press" element={<PressPage />} />
         <Route path="/scholarships" element={<ScholarshipsPage />} />
         <Route path="/sitemap" element={<SitemapPage />} />
