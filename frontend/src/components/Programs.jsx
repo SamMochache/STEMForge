@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import { ArrowUpRight, Plus, Minus, ArrowRight } from 'lucide-react';
 import api from '../services/api';
 
-const FALLBACK_PROGRAMS = [
+const FEATURED_PATHWAYS = [
   {
-    id: 1,
+    id: 'robotics-engineering-pathway',
     title: 'Robotics & Engineering',
     slug: 'robotics-engineering-premium',
     age_min: 10,
@@ -16,7 +16,7 @@ const FALLBACK_PROGRAMS = [
     features: ['Mechanical reasoning', 'Systems thinking', 'Problem decomposition'],
   },
   {
-    id: 2,
+    id: 'ai-ml-pathway',
     title: 'Artificial Intelligence & ML',
     slug: 'ai-machine-learning',
     age_min: 13,
@@ -27,7 +27,7 @@ const FALLBACK_PROGRAMS = [
     features: ['Computational thinking', 'Data literacy', 'Ethical reasoning'],
   },
   {
-    id: 3,
+    id: 'digital-innovation-pathway',
     title: 'Digital Innovation Lab',
     slug: 'digital-innovation-lab',
     age_min: 11,
@@ -38,7 +38,7 @@ const FALLBACK_PROGRAMS = [
     features: ['Design thinking', 'Technical fluency', 'Entrepreneurial mindset'],
   },
   {
-    id: 4,
+    id: 'advanced-research-pathway',
     title: 'Advanced Research Track',
     slug: 'advanced-research',
     age_min: 15,
@@ -52,7 +52,7 @@ const FALLBACK_PROGRAMS = [
 
 const Programs = ({ onApplyClick }) => {
   const [expanded, setExpanded] = useState(0);
-  const [programs, setPrograms] = useState([]);
+  const [programs, setPrograms] = useState(FEATURED_PATHWAYS);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -63,10 +63,18 @@ const Programs = ({ onApplyClick }) => {
       .then((data) => {
         if (cancelled) return;
         const results = data.results || data;
-        setPrograms(results.length > 0 ? results.slice(0, 4) : FALLBACK_PROGRAMS);
+        const featured = FEATURED_PATHWAYS.map((pathway) => {
+          const program = results.find((item) => item.slug === pathway.slug);
+          return {
+            ...program,
+            ...pathway,
+            id: program?.id ?? pathway.id,
+          };
+        });
+        setPrograms(featured);
       })
       .catch(() => {
-        if (!cancelled) setPrograms(FALLBACK_PROGRAMS);
+        if (!cancelled) setPrograms(FEATURED_PATHWAYS);
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -75,7 +83,7 @@ const Programs = ({ onApplyClick }) => {
     return () => { cancelled = true; };
   }, []);
 
-  const displayPrograms = loading ? FALLBACK_PROGRAMS : programs;
+  const displayPrograms = loading ? FEATURED_PATHWAYS : programs;
 
   return (
     <section id="programs" className="py-32 bg-neutral-50">

@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { X, ArrowRight, Check, Loader2 } from 'lucide-react';
 import api from '../services/api';
-import PaymentModal from './PaymentModal';
 import { parseApiError } from '../utils/errorUtils';
 
 const INITIAL_FORM = {
@@ -11,7 +10,12 @@ const INITIAL_FORM = {
   child_name: '',
   child_age: '',
   program: '',
+  call_date: '',
+  call_time: '',
   preferred_schedule: '',
+  wants_bargain: false,
+  promo_code: '',
+  budget_note: '',
   notes: '',
 };
 
@@ -20,15 +24,11 @@ const ApplicationModal = ({ isOpen, onClose, selectedProgram }) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
-  const [showPayment, setShowPayment] = useState(false);
-  const [registrationData, setRegistrationData] = useState(null);
   const [form, setForm] = useState(INITIAL_FORM);
 
   const resetModal = useCallback(() => {
     setSuccess(false);
     setError(null);
-    setShowPayment(false);
-    setRegistrationData(null);
     setForm(INITIAL_FORM);
   }, []);
 
@@ -48,10 +48,11 @@ const ApplicationModal = ({ isOpen, onClose, selectedProgram }) => {
   }, [isOpen, selectedProgram, resetModal]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    const { name, type, checked, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
   };
 
+  const today = new Date().toISOString().split('T')[0];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -59,21 +60,14 @@ const ApplicationModal = ({ isOpen, onClose, selectedProgram }) => {
     setError(null);
 
     try {
-      const registration = await api.createRegistration({
+      await api.createRegistration({
         ...form,
         child_age: parseInt(form.child_age, 10),
         program: parseInt(form.program, 10),
       });
 
-      const programDetails = programs.find((p) => p.id === parseInt(form.program, 10));
       setForm(INITIAL_FORM);
-
-      if (programDetails && programDetails.price > 0) {
-        setRegistrationData({ registration, program: programDetails });
-        setShowPayment(true);
-      } else {
-        setSuccess(true);
-      }
+      setSuccess(true);
     } catch (err) {
       setError(parseApiError(err));
     } finally {
@@ -81,16 +75,10 @@ const ApplicationModal = ({ isOpen, onClose, selectedProgram }) => {
     }
   };
 
-  const handlePaymentClose = () => {
-    setShowPayment(false);
-    setSuccess(true);
-  };
-
   if (!isOpen) return null;
 
   return (
-    <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         {/* Backdrop */}
         <div
           className="absolute inset-0 bg-black/60 backdrop-blur-sm"
@@ -124,8 +112,8 @@ const ApplicationModal = ({ isOpen, onClose, selectedProgram }) => {
                   Application Received
                 </h2>
                 <p className="text-neutral-600 font-light mb-8">
-                  Thank you for your interest in STEMForge. Our admissions team will contact you
-                  within 48 hours.
+                  Thank you for your interest in STEMForge. We'll review your application,
+                  preferred call date, and any discount request, then contact you within 48 hours.
                 </p>
                 <button
                   onClick={onClose}
@@ -284,6 +272,60 @@ const ApplicationModal = ({ isOpen, onClose, selectedProgram }) => {
                     </select>
                   </div>
 
+                  {/* Call Booking */}
+                  <div className="border border-neutral-200 p-5 space-y-5">
+                    <div>
+                      <p className="text-xs tracking-widest uppercase text-neutral-400 mb-2">
+                        Book a Call
+                      </p>
+                      <p className="text-sm text-neutral-600 font-light">
+                        Choose a day and time window when you are free for us to reach out.
+                      </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div>
+                        <label
+                          htmlFor="call_date"
+                          className="block text-xs tracking-widest uppercase text-neutral-400 mb-2"
+                        >
+                          Preferred Call Date
+                        </label>
+                        <input
+                          id="call_date"
+                          type="date"
+                          name="call_date"
+                          value={form.call_date}
+                          onChange={handleChange}
+                          min={today}
+                          className="w-full border border-neutral-200 px-4 py-3 text-neutral-900 focus:outline-none focus:border-neutral-400 transition-colors"
+                        />
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="call_time"
+                          className="block text-xs tracking-widest uppercase text-neutral-400 mb-2"
+                        >
+                          Preferred Time
+                        </label>
+                        <select
+                          id="call_time"
+                          name="call_time"
+                          value={form.call_time}
+                          onChange={handleChange}
+                          className="w-full border border-neutral-200 px-4 py-3 text-neutral-900 focus:outline-none focus:border-neutral-400 transition-colors bg-white"
+                        >
+                          <option value="">No preference</option>
+                          <option value="morning">Morning</option>
+                          <option value="midday">Midday</option>
+                          <option value="afternoon">Afternoon</option>
+                          <option value="evening">Evening</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Schedule */}
                   <div>
                     <label
@@ -304,6 +346,70 @@ const ApplicationModal = ({ isOpen, onClose, selectedProgram }) => {
                       <option value="weekday_afternoon">Weekday Afternoons</option>
                       <option value="saturday">Saturdays</option>
                     </select>
+                  </div>
+
+                  {/* Pricing Options */}
+                  <div className="border border-neutral-200 p-5 space-y-5">
+                    <div>
+                      <p className="text-xs tracking-widest uppercase text-neutral-400 mb-2">
+                        Pricing Options
+                      </p>
+                      <p className="text-sm text-neutral-600 font-light">
+                        Promo codes come from STEMForge campaigns, referral offers, scholarship
+                        invitations, or direct discounts shared by our team.
+                      </p>
+                    </div>
+
+                    <label className="flex items-start gap-3 text-sm text-neutral-700">
+                      <input
+                        type="checkbox"
+                        name="wants_bargain"
+                        checked={form.wants_bargain}
+                        onChange={handleChange}
+                        className="mt-1 h-4 w-4 border-neutral-300 text-neutral-900 focus:ring-neutral-900"
+                      />
+                      <span>
+                        I would like to request a bargaining option or discuss a custom payment plan.
+                      </span>
+                    </label>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div>
+                        <label
+                          htmlFor="promo_code"
+                          className="block text-xs tracking-widest uppercase text-neutral-400 mb-2"
+                        >
+                          Promotion Code
+                        </label>
+                        <input
+                          id="promo_code"
+                          type="text"
+                          name="promo_code"
+                          value={form.promo_code}
+                          onChange={handleChange}
+                          placeholder="Enter code if you have one"
+                          className="w-full border border-neutral-200 px-4 py-3 text-neutral-900 uppercase focus:outline-none focus:border-neutral-400 transition-colors"
+                        />
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="budget_note"
+                          className="block text-xs tracking-widest uppercase text-neutral-400 mb-2"
+                        >
+                          Budget / Offer Note
+                        </label>
+                        <input
+                          id="budget_note"
+                          type="text"
+                          name="budget_note"
+                          value={form.budget_note}
+                          onChange={handleChange}
+                          placeholder="Example: KSh 100,000 budget"
+                          className="w-full border border-neutral-200 px-4 py-3 text-neutral-900 focus:outline-none focus:border-neutral-400 transition-colors"
+                        />
+                      </div>
+                    </div>
                   </div>
 
                   {/* Notes */}
@@ -348,18 +454,7 @@ const ApplicationModal = ({ isOpen, onClose, selectedProgram }) => {
             )}
           </div>
         </div>
-      </div>
-
-      {/* Payment Modal */}
-      {showPayment && registrationData && (
-        <PaymentModal
-          isOpen={showPayment}
-          onClose={handlePaymentClose}
-          registration={registrationData.registration}
-          program={registrationData.program}
-        />
-      )}
-    </>
+    </div>
   );
 };
 

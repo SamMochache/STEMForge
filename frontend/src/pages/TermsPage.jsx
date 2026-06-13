@@ -101,7 +101,7 @@ const TermsPage = () => {
             <h3 className="text-lg font-normal text-neutral-900 mb-3">Payment</h3>
             <ul className="list-disc pl-6 text-neutral-700 font-light space-y-2 mb-6">
               <li>Fees must be paid in full before program start (unless payment plan arranged)</li>
-              <li>We accept M-Pesa, bank transfer, and online card payments</li>
+              <li>Payment instructions are shared after acceptance</li>
               <li>All fees are in Kenyan Shillings (KSh)</li>
               <li>Payment confirmation will be sent via email</li>
             </ul>

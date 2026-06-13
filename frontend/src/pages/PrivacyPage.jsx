@@ -58,7 +58,7 @@ const PrivacyPage = () => {
             <ul className="list-disc pl-6 text-neutral-600 font-light space-y-2 mb-6">
               <li><strong>Parent/Guardian Information:</strong> Name, email address, phone number</li>
               <li><strong>Student Information:</strong> Name, age, educational background</li>
-              <li><strong>Payment Information:</strong> Processed securely through third-party payment processors (we do not store credit card details)</li>
+              <li><strong>Payment Information:</strong> Shared only when needed to arrange enrollment after acceptance</li>
               <li><strong>Communication Data:</strong> Messages, inquiries, and feedback you send us</li>
             </ul>
 
@@ -128,7 +128,7 @@ const PrivacyPage = () => {
               We may share data with trusted third parties who help us operate our business:
             </p>
             <ul className="list-disc pl-6 text-neutral-600 font-light space-y-2 mb-6">
-              <li>Payment processors (M-Pesa, bank gateways)</li>
+              <li>Payment and enrollment partners when required to complete admission</li>
               <li>Email service providers (for communications)</li>
               <li>Cloud storage providers (AWS, Google Cloud)</li>
               <li>Analytics services (Google Analytics)</li>

@@ -113,7 +113,7 @@ const JournalPostPage = () => {
           </div>
         )}
 
-        {/* Content — backend-generated HTML, safe within admin context */}
+        {/* Content comes from the local journal catalog. */}
         {post.content && (
           <div
             className="prose prose-neutral prose-lg max-w-none
@@ -122,7 +122,6 @@ const JournalPostPage = () => {
               prose-a:text-neutral-900 prose-a:no-underline prose-a:border-b prose-a:border-neutral-900
               prose-strong:font-medium
               prose-blockquote:font-light prose-blockquote:text-neutral-600 prose-blockquote:border-neutral-300"
-            // Content comes from our own Django admin — acceptable for this use case
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
         )}

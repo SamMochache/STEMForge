@@ -8,7 +8,7 @@ const ProgramsPage = ({ onApplyClick }) => {
   const [activeCategory, setActiveCategory] = useState('all');
   const [loading, setLoading] = useState(true);
 
-  // Category definitions matching backend
+  // Category definitions matching the local program catalog.
   const categories = [
     { id: 'all', name: 'All Programs', icon: Sparkles },
     { id: 'bootstrap', name: 'Bootstrap (Free)', icon: Zap },

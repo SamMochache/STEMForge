@@ -76,7 +76,7 @@ export const CareersPage = () => {
       location: 'Remote',
       salary: '200,000 - 300,000 KSh',
       experience: '2+ years development',
-      description: 'Build and maintain our learning platform. Work with React, Django, and databases. Help scale our digital infrastructure.',
+      description: 'Build and maintain our learning platform. Work with React, content systems, and performance tooling. Help scale our digital infrastructure.',
       highlights: [
         'Modern tech stack',
         'Remote flexibility',
