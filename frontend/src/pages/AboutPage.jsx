@@ -1,4 +1,3 @@
-// frontend/src/pages/AboutPage.jsx
 import { Award, Zap, Globe, Users, TrendingUp, Target } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
@@ -6,98 +5,98 @@ import { ArrowRight, ArrowUpRight } from 'lucide-react';
 const AboutPage = ({ onApplyClick }) => {
   const milestones = [
     { year: '2024', event: 'STEMForge Founded in Nairobi, Kenya' },
-    { year: '2024', event: 'First cohort of 45 students enrolled' },
+    { year: '2024', event: 'First institutional partnership cohort launched' },
     { year: '2024', event: 'Partnership with Tech Leaders Africa' },
-    { year: '2025', event: 'Expansion to 28+ specialized programs' },
-    { year: '2025', event: 'Alumni success placements begins' },
+    { year: '2025', event: 'Three-pillar academy model refined and deployed' },
+    { year: '2025', event: 'Expansion to partner schools across Nairobi' },
   ];
 
   const values = [
     {
       icon: Zap,
-      title: 'Excellence',
-      description: 'We pursue mastery in everything we do. From curriculum design to student mentorship, excellence is non-negotiable.',
+      title: 'AI-Native Education',
+      description: 'Students build with AI—not just learn about it. Every module integrates generative tools, automation, and data literacy.',
     },
     {
       icon: Globe,
-      title: 'Innovation',
-      description: 'We believe in challenging conventions. Our approach mirrors leading tech companies and research institutions globally.',
+      title: 'Entrepreneurship as Pedagogy',
+      description: 'Students launch real ventures, not hypothetical projects. Revenue, customers, failure, iteration.',
     },
     {
       icon: Users,
-      title: 'Community',
-      description: 'We cultivate a collaborative ecosystem where students, mentors, and families grow together.',
+      title: 'Classical Liberal Foundations',
+      description: 'We connect innovation to freedom, property rights to progress, and voluntary exchange to prosperity.',
     },
     {
       icon: Target,
-      title: 'Impact',
-      description: 'We measure success by the careers built, problems solved, and lives transformed.',
+      title: 'Measurable Human Flourishing',
+      description: 'Outcomes tracked: critical thinking growth, venture creation, AI competency portfolios, civic engagement.',
     },
   ];
 
   const stats = [
-    { number: '500+', label: 'Aspiring Young Minds Reached' },
-    { number: '28+', label: 'Specialized Programs' },
-    { number: '98%', label: 'Parent Satisfaction Rate' },
-    { number: '12', label: 'Years of Combined Expertise' },
+    { number: '500+', label: 'Students Reached' },
+    { number: '3', label: 'Academy Pillars' },
+    { number: '98%', label: 'Partner Satisfaction' },
+    { number: '12', label: 'Years Combined Expertise' },
   ];
 
   const teamMembers = [
     {
       name: 'Dr. Amara Okonkwo',
       role: 'Founder & Executive Director',
-      bio: 'Former Google engineer & MIT graduate. 15+ years in tech education. Vision: Make world-class STEM education accessible to Africa\'s brightest.',
+      bio: 'Former Google engineer & MIT graduate. 15+ years in tech education. Vision: Equip African students with the AI literacy and entrepreneurial capability to lead in a knowledge economy.',
       expertise: ['Technology Leadership', 'STEM Curriculum', 'EdTech Innovation'],
     },
     {
       name: 'James Kipchoge',
       role: 'Head of Academics',
-      bio: 'PhD in Computer Science. Previously taught at University of Nairobi. Designed 20+ specialized STEM curricula.',
+      bio: 'PhD in Computer Science. Previously taught at University of Nairobi. Designed our three-pillar academy model.',
       expertise: ['Curriculum Design', 'Research', 'Student Mentoring'],
     },
     {
       name: 'Sarah Mutua',
       role: 'Director of Student Success',
-      bio: 'Career coach with 10+ years experience. Helped 200+ students secure internships and scholarships.',
-      expertise: ['Career Coaching', 'Student Success', 'Mentorship'],
+      bio: 'Career coach with 10+ years experience. Specialist in measuring competency growth and entrepreneurial outcomes.',
+      expertise: ['Career Coaching', 'Outcome Measurement', 'Mentorship'],
     },
     {
       name: 'David Chen',
       role: 'Head of Innovation Labs',
-      bio: 'Serial entrepreneur, founded 3 tech startups. Now leading our hands-on maker labs and project-based learning.',
-      expertise: ['Robotics', 'Project-Based Learning', 'Innovation'],
+      bio: 'Serial entrepreneur, founded 3 tech startups. Leads our facilitator training and innovation challenge design.',
+      expertise: ['Facilitator Training', 'Innovation Challenges', 'Venture Creation'],
     },
   ];
 
   const whyChooseUs = [
     {
-      title: 'Expert Instructors',
-      description: 'Our team combines industry experience with proven teaching excellence. Average 12+ years of relevant expertise.',
+      title: 'Selective Partnership',
+      description: 'We don\'t work with every school. We select institutions committed to long-term impact—and we limit new partners to ensure quality.',
       icon: Award,
     },
     {
-      title: 'Project-Based Learning',
-      description: 'Students build real things. Every concept is learned through creation, iteration, and practical application.',
+      title: 'AI-Native, Not AI-Aware',
+      description: 'Every module integrates generative tools, automation, and data literacy. Students build with AI from day one.',
       icon: Zap,
     },
     {
-      title: 'Global Standards',
-      description: 'Curriculum benchmarked against MIT, Stanford, and leading international STEM programs.',
+      title: 'In-School Delivery',
+      description: 'Our trained facilitators come to your school. No disruption to your timetable. Just a dedicated 2-hour slot per week.',
       icon: Globe,
     },
     {
-      title: 'Small Cohorts',
-      description: 'Maximum 15 students per class. Personalized attention ensures every student reaches their potential.',
+      title: 'Measurable Outcomes',
+      description: 'Competency growth dashboards, portfolio development, venture creation metrics, and civic engagement tracking.',
       icon: Users,
     },
     {
-      title: 'Career Pathways',
-      description: 'Direct support transitioning to universities, internships, and tech careers. 85% placed within 6 months.',
+      title: 'Real Ventures, Not Projects',
+      description: 'Students launch businesses with real customers. They experience revenue, failure, and iteration—not simulations.',
       icon: TrendingUp,
     },
     {
-      title: 'Industry Partnerships',
-      description: 'Partnerships with Nairobi tech companies, universities, and innovation hubs for real-world opportunities.',
+      title: 'Trained Facilitators',
+      description: 'Every STEMForge facilitator is vetted, trained in our three-pillar model, and continuously developed.',
       icon: Target,
     },
   ];
@@ -109,10 +108,12 @@ const AboutPage = ({ onApplyClick }) => {
         <div className="max-w-5xl mx-auto">
           <p className="text-neutral-400 text-sm tracking-widest uppercase mb-6">About STEMForge</p>
           <h1 className="text-5xl md:text-6xl font-light leading-tight mb-8">
-            Building Africa's next generation of brilliant minds
+            A Future Skills Academy for African secondary schools
           </h1>
           <p className="text-xl text-neutral-300 font-light max-w-2xl leading-relaxed">
-            Since 2024, STEMForge has been committed to providing elite STEM education that transforms ambitious young learners into confident innovators and problem-solvers.
+            We are not a curriculum vendor. We partner with visionary institutions to deliver
+            immersive, AI-enabled learning experiences that cultivate the next generation of
+            innovators, entrepreneurs, and free thinkers.
           </p>
         </div>
       </section>
@@ -124,19 +125,26 @@ const AboutPage = ({ onApplyClick }) => {
             <div>
               <h2 className="text-3xl font-light text-neutral-900 mb-6">Our Mission</h2>
               <p className="text-neutral-600 font-light text-lg leading-relaxed mb-4">
-                To cultivate excellence in STEM education by providing Africa's brightest young minds with world-class instruction, cutting-edge tools, and transformative mentorship.
+                To cultivate Africa's next generation of innovators, entrepreneurs, and free
+                thinkers—equipped with AI literacy, entrepreneurial capability, and the classical
+                liberal values that enable human flourishing.
               </p>
               <p className="text-neutral-600 font-light text-lg leading-relaxed">
-                We believe that brilliance isn't exclusive—it's universal. With the right environment, guidance, and opportunities, every ambitious learner can achieve extraordinary things.
+                We partner with selective institutions to deliver immersive, AI-enabled learning
+                experiences that go beyond curriculum—building character, capability, and the
+                foundations for a life of purpose.
               </p>
             </div>
             <div>
-              <h2 className="text-3xl font-light text-neutral-900 mb-6">Our Vision</h2>
+              <h2 className="text-3xl font-light text-neutral-900 mb-6">What We Are</h2>
               <p className="text-neutral-600 font-light text-lg leading-relaxed mb-4">
-                A world where African youth lead global innovation in science, technology, engineering, and mathematics.
+                A Future Skills Academy, not a curriculum vendor. We partner with selective
+                institutions to deliver immersive, AI-enabled learning experiences.
               </p>
               <p className="text-neutral-600 font-light text-lg leading-relaxed">
-                We envision STEMForge alumni building companies, conducting groundbreaking research, and solving humanity's greatest challenges—not as followers of innovation, but as architects of it.
+                Preparing leaders, not just learners. Our students don't complete hypothetical
+                projects—they build AI prototypes, launch micro-ventures, and engage with the ideas
+                that have driven human progress for centuries.
               </p>
             </div>
           </div>
@@ -186,7 +194,7 @@ const AboutPage = ({ onApplyClick }) => {
         <div className="max-w-7xl mx-auto">
           <div className="mb-16">
             <p className="text-neutral-400 text-sm tracking-widest uppercase mb-4">The STEMForge Difference</p>
-            <h2 className="text-4xl font-light text-neutral-900">Why Choose Us</h2>
+            <h2 className="text-4xl font-light text-neutral-900">Why Partner With Us</h2>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {whyChooseUs.map((item, i) => {
@@ -210,7 +218,7 @@ const AboutPage = ({ onApplyClick }) => {
             <p className="text-neutral-400 text-sm tracking-widest uppercase mb-4">Leadership</p>
             <h2 className="text-4xl font-light text-neutral-900">Meet Our Team</h2>
             <p className="text-neutral-600 font-light mt-4 max-w-2xl">
-              Experienced educators and industry leaders dedicated to transforming STEM education in Africa.
+              Educators, entrepreneurs, and industry leaders united by a single mission.
             </p>
           </div>
           <div className="grid md:grid-cols-2 gap-12">
@@ -263,17 +271,21 @@ const AboutPage = ({ onApplyClick }) => {
       {/* CTA Section */}
       <section className="py-20 px-8 bg-neutral-900 text-white">
         <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-4xl font-light mb-6">Ready to Join Our Community?</h2>
-          <p className="text-neutral-300 font-light text-lg mb-12 max-w-2xl mx-auto">
-            Whether you're a student ready to transform your STEM journey or an educator
-            interested in partnering with us—let's build something extraordinary together.
+          <h2 className="text-4xl font-light mb-6">Ready to Explore Partnership?</h2>
+          <p className="text-neutral-300 font-light text-lg mb-4 max-w-2xl mx-auto">
+            We select partners committed to long-term impact. If your school shares our vision,
+            request a 30-minute discovery call.
+          </p>
+          <p className="text-neutral-500 text-sm mb-12">
+            Investment: from KSh 10,000 per student per term. Pilot partnership rate for first-time
+            institutional partners.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={onApplyClick}
               className="bg-white text-neutral-900 px-10 py-4 text-sm tracking-wide hover:bg-neutral-100 transition-colors inline-flex items-center justify-center gap-2"
             >
-              Apply Now
+              Request Discovery Session
               <ArrowRight size={16} />
             </button>
             <Link

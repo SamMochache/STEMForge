@@ -11,19 +11,16 @@ const Navigation = ({ scrolled, onApplyClick }) => {
   const isHome = location.pathname === '/';
   const showDark = scrolled || !isHome;
 
-  // Close menus on route change
   useEffect(() => {
     setOpen(false);
     setCompanyOpen(false);
   }, [location.pathname]);
 
-  // Prevent body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [open]);
 
-  // Close Company dropdown on outside click
   useEffect(() => {
     if (!companyOpen) return;
     const handler = (e) => {
@@ -36,10 +33,10 @@ const Navigation = ({ scrolled, onApplyClick }) => {
   }, [companyOpen]);
 
   const mainNav = [
-    { name: 'Programs', path: '/programs' },
-    { name: 'Journal', path: '/journal' },
+    { name: 'Academy', path: '/programs' },
+    { name: 'Insights', path: '/journal' },
     {
-      name: 'Company',
+      name: 'About',
       submenu: [
         { label: 'About', path: '/about' },
         { label: 'Our Team', path: '/team' },
@@ -78,7 +75,6 @@ const Navigation = ({ scrolled, onApplyClick }) => {
           {mainNav.map((item) => (
             <div key={item.name} className="relative">
               {item.submenu ? (
-                /* Company dropdown — click-based for mouse AND touch */
                 <div ref={companyRef}>
                   <button
                     onClick={() => setCompanyOpen((prev) => !prev)}
@@ -140,7 +136,7 @@ const Navigation = ({ scrolled, onApplyClick }) => {
                 : 'bg-white text-neutral-900 hover:bg-neutral-100'
             }`}
           >
-            Apply Now
+            Partner With Us
           </button>
 
           <button
@@ -193,7 +189,7 @@ const Navigation = ({ scrolled, onApplyClick }) => {
               }}
               className="mt-8 bg-neutral-900 text-white py-4 text-sm tracking-wide w-full"
             >
-              Apply Now
+              Partner With Us
             </button>
 
             <div className="pt-8 border-t border-neutral-100 space-y-2 text-xs text-neutral-600">

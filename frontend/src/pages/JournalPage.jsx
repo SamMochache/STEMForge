@@ -17,7 +17,7 @@ const JournalPage = () => {
         if (!cancelled) setPosts(data.results || data);
       })
       .catch(() => {
-        if (!cancelled) setError('Failed to load journal entries. Please try again later.');
+        if (!cancelled) setError('Failed to load insights. Please try again later.');
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -44,12 +44,13 @@ const JournalPage = () => {
       <div className="max-w-7xl mx-auto px-8">
         {/* Header */}
         <div className="max-w-3xl mb-20">
-          <p className="text-neutral-400 text-sm tracking-widest uppercase mb-6">Journal</p>
+          <p className="text-neutral-400 text-sm tracking-widest uppercase mb-6">Insights</p>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-light text-neutral-900 leading-tight tracking-tight mb-8">
-            Insights & Stories
+            Thought Leadership
           </h1>
           <p className="text-neutral-600 text-lg font-light leading-relaxed">
-            Reflections on education, innovation, and the journeys of our students and community.
+            Written for school leaders, education innovators, and policy thinkers. Perspectives
+            on AI, entrepreneurship, classical liberal education, and the future of learning in Africa.
           </p>
         </div>
 
@@ -76,7 +77,7 @@ const JournalPage = () => {
           </div>
         ) : posts.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-neutral-500">No journal entries yet. Check back soon.</p>
+            <p className="text-neutral-500">No insights yet. Check back soon.</p>
           </div>
         ) : (
           <div className="space-y-0">
