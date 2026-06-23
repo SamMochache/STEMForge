@@ -1,46 +1,32 @@
-# STEMForge Academy
+# STEMForge
 
-Frontend-only STEM education site for STEMForge Academy in Nairobi, Kenya.
+&gt; EdTech partner for schools. In-school AI, coding, robotics, and entrepreneurship for ages 10–18.
 
-## What Is Included
+**Live:** [stem-forge.vercel.app](https://stem-forge.vercel.app)
 
-- Program catalog seeded from the former `seed_programs.py`
-- Journal posts seeded from the former `seed_blogs.py`
-- Program detail pages and journal article pages
-- Local application and booking forms stored in browser `localStorage`
-- No Django backend, database, Celery worker, or M-Pesa integration required
+---
 
-## Tech Stack
+## What We Do
 
-| Layer | Technology |
-|---|---|
-| Frontend | React 19, Vite, Tailwind CSS, React Router v7 |
-| Data | Local JavaScript modules in `frontend/src/data` |
-| Hosting | Vercel or any static host |
+STEMForge delivers four in-school solution pillars, facilitated by our team, powered by our platform:
 
-## Local Development
+| Solution | Ages | What Students Build |
+|---|---|---|
+| AI Literacy | 10–18 | Functioning AI prototype |
+| Coding & Development | 12–18 | Deployable web application |
+| Robotics & Physical Computing | 12–18 | Autonomous robot |
+| Innovation & Entrepreneurship | 14–18 | Revenue-generating micro-venture |
+
+**Investment:** From KSh 10,000 per student per term. Pilot rate for first-time partners.
+
+**Curriculum alignment:** CBC, IB, IGCSE, A-Level, and national frameworks.
+
+---
+
+## Quick Start (Development)
 
 ```bash
 cd frontend
 npm install
-npm run dev
-```
-
-Open the local URL printed by Vite, usually `http://localhost:5173`.
-
-## Build
-
-```bash
-cd frontend
-npm run build
-```
-
-The production build is written to `frontend/dist`.
-
-## Content
-
-Program data lives in `frontend/src/data/programs.js`.
-
-Journal data lives in `frontend/src/data/blogPosts.js`.
-
-Application and booking submissions are saved locally in the visitor's browser. To collect real submissions later, connect the form methods in `frontend/src/services/api.js` to a form provider or another backend service.
+npm run dev        # http://localhost:5173
+npm run build      # output: frontend/dist
