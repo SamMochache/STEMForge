@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown } from 'lucide-react';
 
-const Navigation = ({ scrolled, onApplyClick }) => {
+const Navigation = ({ scrolled }) => {
   const [open, setOpen] = useState(false);
   const [companyOpen, setCompanyOpen] = useState(false);
   const companyRef = useRef(null);
@@ -33,7 +33,7 @@ const Navigation = ({ scrolled, onApplyClick }) => {
   }, [companyOpen]);
 
   const mainNav = [
-    { name: 'Academy', path: '/programs' },
+    { name: 'Solutions', path: '/programs' },
     { name: 'Insights', path: '/journal' },
     {
       name: 'About',
@@ -48,64 +48,50 @@ const Navigation = ({ scrolled, onApplyClick }) => {
   ];
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         showDark
-          ? 'bg-white/95 backdrop-blur-sm border-b border-neutral-100'
+          ? 'bg-[#0a0a0a]/95 backdrop-blur-md border-b border-white/5'
           : 'bg-transparent'
       }`}
-      role="navigation"
-      aria-label="Main navigation"
     >
-      <div className="max-w-7xl mx-auto px-8 py-6 flex items-center justify-between">
-        {/* Logo */}
-        <Link
-          to="/"
-          className="text-xl tracking-tight font-light"
-          aria-label="STEMForge Home"
-        >
-          <span className={showDark ? 'text-neutral-900' : 'text-white'}>STEM</span>
-          <span className={`font-medium ${showDark ? 'text-neutral-900' : 'text-white'}`}>
-            FORGE
-          </span>
-        </Link>
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="flex items-center justify-between h-20">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-3 group">
+            <span className="text-xl font-bold tracking-tight text-white">
+              STEMFORGE
+            </span>
+            <span className="hidden sm:inline text-[10px] uppercase tracking-[0.2em] text-white/40 font-medium">
+              Nairobi, Kenya
+            </span>
+          </Link>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-12">
-          {mainNav.map((item) => (
-            <div key={item.name} className="relative">
-              {item.submenu ? (
-                <div ref={companyRef}>
+          {/* Desktop Nav */}
+          <nav className="hidden lg:flex items-center gap-8">
+            {mainNav.map((item) =>
+              item.submenu ? (
+                <div key={item.name} className="relative" ref={companyRef}>
                   <button
-                    onClick={() => setCompanyOpen((prev) => !prev)}
-                    className={`text-sm tracking-wide transition-colors flex items-center gap-1 ${
-                      showDark
-                        ? 'text-neutral-600 hover:text-neutral-900'
-                        : 'text-white/80 hover:text-white'
-                    }`}
-                    aria-haspopup="true"
-                    aria-expanded={companyOpen}
+                    onClick={() => setCompanyOpen(!companyOpen)}
+                    className="flex items-center gap-1 text-sm text-white/60 hover:text-white transition-colors duration-300"
                   >
                     {item.name}
                     <ChevronDown
                       size={14}
-                      className={`opacity-50 transition-transform duration-200 ${
-                        companyOpen ? 'rotate-180' : ''
-                      }`}
-                      aria-hidden="true"
+                      className={`transition-transform duration-300 ${companyOpen ? 'rotate-180' : ''}`}
                     />
                   </button>
-
                   {companyOpen && (
-                    <div className="absolute left-0 top-full mt-2 w-48 bg-white border border-neutral-200 shadow-lg z-50">
-                      {item.submenu.map((subitem) => (
+                    <div className="absolute top-full left-0 mt-2 w-48 bg-[#141414] border border-white/10 rounded-lg shadow-2xl overflow-hidden">
+                      {item.submenu.map((sub) => (
                         <Link
-                          key={subitem.label}
-                          to={subitem.path}
+                          key={sub.path}
+                          to={sub.path}
                           onClick={() => setCompanyOpen(false)}
-                          className="block px-4 py-3 text-sm text-neutral-700 hover:bg-neutral-50 transition-colors"
+                          className="block px-4 py-3 text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors"
                         >
-                          {subitem.label}
+                          {sub.label}
                         </Link>
                       ))}
                     </div>
@@ -113,37 +99,31 @@ const Navigation = ({ scrolled, onApplyClick }) => {
                 </div>
               ) : (
                 <Link
+                  key={item.path}
                   to={item.path}
-                  className={`text-sm tracking-wide transition-colors hover:opacity-60 ${
-                    showDark ? 'text-neutral-600' : 'text-white/80'
-                  } ${location.pathname === item.path ? 'opacity-60' : ''}`}
-                  aria-current={location.pathname === item.path ? 'page' : undefined}
+                  className="text-sm text-white/60 hover:text-white transition-colors duration-300"
                 >
                   {item.name}
                 </Link>
-              )}
-            </div>
-          ))}
-        </div>
+              )
+            )}
+          </nav>
 
-        {/* Desktop CTA & Mobile Toggle */}
-        <div className="flex items-center gap-4">
-          <button
-            onClick={onApplyClick}
-            className={`hidden md:block text-sm tracking-wide px-6 py-3 transition-all ${
-              showDark
-                ? 'bg-neutral-900 text-white hover:bg-neutral-800'
-                : 'bg-white text-neutral-900 hover:bg-neutral-100'
-            }`}
-          >
-            Partner With Us
-          </button>
+          {/* CTA - Partner With Us navigates to /contact */}
+          <div className="hidden lg:block">
+            <Link
+              to="/contact"
+              className="px-6 py-2.5 bg-white text-[#0a0a0a] text-sm font-semibold rounded-full hover:bg-white/90 transition-colors duration-300"
+            >
+              Partner With Us
+            </Link>
+          </div>
 
+          {/* Mobile Toggle */}
           <button
-            className={`md:hidden ${showDark ? 'text-neutral-900' : 'text-white'}`}
-            onClick={() => setOpen((prev) => !prev)}
-            aria-label={open ? 'Close menu' : 'Open menu'}
-            aria-expanded={open}
+            onClick={() => setOpen(!open)}
+            className="lg:hidden text-white p-2"
+            aria-label="Toggle menu"
           >
             {open ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -152,55 +132,47 @@ const Navigation = ({ scrolled, onApplyClick }) => {
 
       {/* Mobile Menu */}
       {open && (
-        <div className="md:hidden fixed inset-0 bg-white z-40 pt-24 px-8 overflow-y-auto">
-          <div className="flex flex-col gap-4 pb-20">
-            {mainNav.map((item) => (
-              <div key={item.name}>
-                {item.submenu ? (
-                  <>
-                    <p className="text-2xl font-light text-neutral-900 py-2">{item.name}</p>
-                    <div className="pl-4 space-y-2">
-                      {item.submenu.map((sub) => (
-                        <Link
-                          key={sub.label}
-                          to={sub.path}
-                          className="block text-neutral-600 text-sm py-2 hover:text-neutral-900"
-                        >
-                          {sub.label}
-                        </Link>
-                      ))}
-                    </div>
-                  </>
-                ) : (
-                  <Link
-                    to={item.path}
-                    className="text-2xl font-light text-neutral-900 py-2 border-b border-neutral-100 block"
-                  >
-                    {item.name}
-                  </Link>
-                )}
-              </div>
-            ))}
-
-            <button
-              onClick={() => {
-                setOpen(false);
-                onApplyClick();
-              }}
-              className="mt-8 bg-neutral-900 text-white py-4 text-sm tracking-wide w-full"
+        <div className="lg:hidden fixed inset-0 top-20 bg-[#0a0a0a] z-40 px-6 py-8">
+          <nav className="flex flex-col gap-6">
+            {mainNav.map((item) =>
+              item.submenu ? (
+                <div key={item.name}>
+                  <span className="text-lg text-white/60">{item.name}</span>
+                  <div className="mt-2 ml-4 flex flex-col gap-3">
+                    {item.submenu.map((sub) => (
+                      <Link
+                        key={sub.path}
+                        to={sub.path}
+                        onClick={() => setOpen(false)}
+                        className="text-white/40 hover:text-white transition-colors"
+                      >
+                        {sub.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setOpen(false)}
+                  className="text-lg text-white/60 hover:text-white transition-colors"
+                >
+                  {item.name}
+                </Link>
+              )
+            )}
+            <Link
+              to="/contact"
+              onClick={() => setOpen(false)}
+              className="mt-4 w-full py-3 bg-white text-[#0a0a0a] font-semibold rounded-full text-center"
             >
               Partner With Us
-            </button>
-
-            <div className="pt-8 border-t border-neutral-100 space-y-2 text-xs text-neutral-600">
-              <Link to="/faq" className="block hover:text-neutral-900">FAQ</Link>
-              <Link to="/careers" className="block hover:text-neutral-900">Careers</Link>
-              <Link to="/contact" className="block hover:text-neutral-900">Contact</Link>
-            </div>
-          </div>
+            </Link>
+          </nav>
         </div>
       )}
-    </nav>
+    </header>
   );
 };
 

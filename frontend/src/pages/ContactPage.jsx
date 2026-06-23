@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { MapPin, Phone, Mail, Clock, ArrowRight, Check, Loader2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ArrowRight, Check, Mail, Phone, MapPin, Clock, Loader2 } from 'lucide-react';
+import { programs } from '../data/programs';
 
 const INITIAL_FORM = {
   school_name: '',
@@ -7,91 +9,142 @@ const INITIAL_FORM = {
   contact_title: '',
   school_type: '',
   student_population: '',
-  stem_infrastructure: '',
+  current_stem: '',
+  interested_solutions: [],
+  why_partner: '',
   phone: '',
   email: '',
-  why_partner: '',
   preferred_time: '',
+  additional_notes: '',
 };
 
-const ContactPage = ({ onBookingClick }) => {
+const SCHOOL_TYPES = [
+  'Public School',
+  'Private School',
+  'International School',
+  'Faith-based School',
+  'Charter School',
+  'Other',
+];
+
+const TIME_SLOTS = [
+  'Morning (8am - 12pm)',
+  'Afternoon (12pm - 4pm)',
+  'Evening (4pm - 7pm)',
+];
+
+const ContactPage = () => {
   const [form, setForm] = useState(INITIAL_FORM);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+
+    if (type === 'checkbox' && name === 'interested_solutions') {
+      const solutionId = value;
+      setForm((prev) => ({
+        ...prev,
+        interested_solutions: checked
+          ? [...prev.interested_solutions, solutionId]
+          : prev.interested_solutions.filter((id) => id !== solutionId),
+      }));
+    } else {
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.why_partner.trim()) {
-      setError('Please tell us why your school wants to partner with STEMForge.');
-      return;
-    }
     setLoading(true);
     setError(null);
 
     try {
-      // Store locally; can be wired to a form endpoint later
-      const submissions = JSON.parse(window.localStorage.getItem('stemforge_partner_inquiries') || '[]');
-      submissions.unshift({ ...form, id: Date.now(), created_at: new Date().toISOString() });
-      window.localStorage.setItem('stemforge_partner_inquiries', JSON.stringify(submissions));
+      // Save to localStorage (replace with actual API call when ready)
+      const submissions = JSON.parse(localStorage.getItem('stemforge_inquiries') || '[]');
+      submissions.push({
+        ...form,
+        submitted_at: new Date().toISOString(),
+        id: Date.now(),
+      });
+      localStorage.setItem('stemforge_inquiries', JSON.stringify(submissions));
+
+      // Simulate API delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       setSuccess(true);
       setForm(INITIAL_FORM);
-    } catch {
-      setError('Something went wrong. Please try again or email us directly.');
+    } catch (err) {
+      setError('Something went wrong. Please try again or contact us directly.');
     } finally {
       setLoading(false);
     }
   };
 
+  if (success) {
+    return (
+      <div className="min-h-screen bg-white pt-32 pb-20">
+        <div className="max-w-2xl mx-auto px-8 text-center">
+          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Check size={32} className="text-green-600" />
+          </div>
+          <h2 className="text-3xl font-light text-neutral-900 mb-4">
+            Inquiry Received
+          </h2>
+          <p className="text-neutral-600 font-light mb-8">
+            Thank you. We'll review your submission and reach out within 48 hours if there's
+            mutual alignment. Pilot partnership rates are extended to select first-time
+            institutional partners.
+          </p>
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-neutral-900 border-b border-neutral-900 pb-1"
+          >
+            Return to Home
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <main className="pt-32 pb-20">
+    <div className="min-h-screen bg-white pt-32 pb-20">
       <div className="max-w-7xl mx-auto px-8">
         {/* Header */}
-        <div className="max-w-3xl mb-20">
-          <p className="text-neutral-400 text-sm tracking-widest uppercase mb-6">
+        <div className="max-w-3xl mb-16">
+          <p className="text-neutral-400 text-sm tracking-widest uppercase mb-4">
             Partner With Us
           </p>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-light text-neutral-900 leading-tight tracking-tight mb-8">
+          <h1 className="text-4xl md:text-5xl font-light text-neutral-900 leading-tight mb-6">
             Request a Discovery Session
           </h1>
-          <p className="text-neutral-600 text-lg font-light leading-relaxed">
+          <p className="text-neutral-600 font-light text-lg leading-relaxed">
             We review every inquiry personally. If there's mutual alignment, we'll schedule
-            a 30-minute discovery call within 48 hours.
+            a 30-minute discovery call within 48 hours. Pilot partnership rates are extended
+            to select first-time institutional partners.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24">
+        <div className="grid lg:grid-cols-3 gap-12">
           {/* Form */}
-          <div>
-            {success ? (
-              <div className="py-16 text-center">
-                <div className="w-16 h-16 bg-neutral-900 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Check size={32} className="text-white" />
-                </div>
-                <h2 className="text-2xl font-light text-neutral-900 mb-4">Inquiry Received</h2>
-                <p className="text-neutral-600 font-light">
-                  Thank you. We'll review your submission and reach out within 48 hours if there's
-                  mutual alignment.
-                </p>
+          <div className="lg:col-span-2">
+            {error && (
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 text-sm">
+                {error}
               </div>
-            ) : (
-              <>
-                {error && (
-                  <div className="bg-red-50 border border-red-200 text-red-700 text-sm p-4 mb-6">
-                    {error}
-                  </div>
-                )}
-                <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-                  {/* School Name */}
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-8">
+              {/* School Information */}
+              <div>
+                <h3 className="text-sm tracking-widest uppercase text-neutral-400 mb-4">
+                  School Information
+                </h3>
+                <div className="space-y-4">
                   <div>
-                    <label className="block text-xs tracking-widest uppercase text-neutral-400 mb-2">
-                      School Name *
+                    <label className="block text-sm text-neutral-700 mb-2">
+                      School Name <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -99,15 +152,15 @@ const ContactPage = ({ onBookingClick }) => {
                       value={form.school_name}
                       onChange={handleChange}
                       required
-                      className="w-full border border-neutral-200 px-4 py-3 text-neutral-900 focus:outline-none focus:border-neutral-400 transition-colors"
+                      className="w-full px-4 py-3 border border-neutral-200 focus:border-neutral-900 focus:outline-none transition-colors"
+                      placeholder="e.g., Nairobi International School"
                     />
                   </div>
 
-                  {/* Name & Title */}
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs tracking-widest uppercase text-neutral-400 mb-2">
-                        Your Name *
+                      <label className="block text-sm text-neutral-700 mb-2">
+                        Your Name <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -115,12 +168,13 @@ const ContactPage = ({ onBookingClick }) => {
                         value={form.contact_name}
                         onChange={handleChange}
                         required
-                        className="w-full border border-neutral-200 px-4 py-3 text-neutral-900 focus:outline-none focus:border-neutral-400 transition-colors"
+                        className="w-full px-4 py-3 border border-neutral-200 focus:border-neutral-900 focus:outline-none transition-colors"
+                        placeholder="e.g., Jane Wanjiku"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs tracking-widest uppercase text-neutral-400 mb-2">
-                        Your Title *
+                      <label className="block text-sm text-neutral-700 mb-2">
+                        Your Title <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -128,37 +182,32 @@ const ContactPage = ({ onBookingClick }) => {
                         value={form.contact_title}
                         onChange={handleChange}
                         required
-                        placeholder="e.g. Principal, Head of Academics"
-                        className="w-full border border-neutral-200 px-4 py-3 text-neutral-900 focus:outline-none focus:border-neutral-400 transition-colors"
+                        className="w-full px-4 py-3 border border-neutral-200 focus:border-neutral-900 focus:outline-none transition-colors"
+                        placeholder="e.g., Head Teacher, Deputy, BOM Chair"
                       />
                     </div>
                   </div>
 
-                  {/* School Type */}
-                  <div>
-                    <label className="block text-xs tracking-widest uppercase text-neutral-400 mb-2">
-                      School Type *
-                    </label>
-                    <select
-                      name="school_type"
-                      value={form.school_type}
-                      onChange={handleChange}
-                      required
-                      className="w-full border border-neutral-200 px-4 py-3 text-neutral-900 focus:outline-none focus:border-neutral-400 transition-colors bg-white"
-                    >
-                      <option value="">Select school type</option>
-                      <option value="national">National School</option>
-                      <option value="private">Private School</option>
-                      <option value="international">International School</option>
-                      <option value="faith">Faith-Based School</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-
-                  {/* Student Population & Infrastructure */}
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs tracking-widest uppercase text-neutral-400 mb-2">
+                      <label className="block text-sm text-neutral-700 mb-2">
+                        School Type <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        name="school_type"
+                        value={form.school_type}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-4 py-3 border border-neutral-200 focus:border-neutral-900 focus:outline-none transition-colors bg-white"
+                      >
+                        <option value="">Select type</option>
+                        {SCHOOL_TYPES.map((type) => (
+                          <option key={type} value={type}>{type}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm text-neutral-700 mb-2">
                         Student Population (Forms 1–4)
                       </label>
                       <input
@@ -166,65 +215,109 @@ const ContactPage = ({ onBookingClick }) => {
                         name="student_population"
                         value={form.student_population}
                         onChange={handleChange}
-                        placeholder="e.g. 800 students"
-                        className="w-full border border-neutral-200 px-4 py-3 text-neutral-900 focus:outline-none focus:border-neutral-400 transition-colors"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs tracking-widest uppercase text-neutral-400 mb-2">
-                        Current STEM/ICT Infrastructure
-                      </label>
-                      <select
-                        name="stem_infrastructure"
-                        value={form.stem_infrastructure}
-                        onChange={handleChange}
-                        className="w-full border border-neutral-200 px-4 py-3 text-neutral-900 focus:outline-none focus:border-neutral-400 transition-colors bg-white"
-                      >
-                        <option value="">Select level</option>
-                        <option value="1">1 — Minimal / none</option>
-                        <option value="2">2 — Basic computer lab</option>
-                        <option value="3">3 — Moderate infrastructure</option>
-                        <option value="4">4 — Good infrastructure</option>
-                        <option value="5">5 — Excellent / fully equipped</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Phone & Email */}
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-xs tracking-widest uppercase text-neutral-400 mb-2">
-                        Phone / WhatsApp *
-                      </label>
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={form.phone}
-                        onChange={handleChange}
-                        required
-                        placeholder="+254…"
-                        className="w-full border border-neutral-200 px-4 py-3 text-neutral-900 focus:outline-none focus:border-neutral-400 transition-colors"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs tracking-widest uppercase text-neutral-400 mb-2">
-                        Email *
-                      </label>
-                      <input
-                        type="email"
-                        name="email"
-                        value={form.email}
-                        onChange={handleChange}
-                        required
-                        className="w-full border border-neutral-200 px-4 py-3 text-neutral-900 focus:outline-none focus:border-neutral-400 transition-colors"
+                        className="w-full px-4 py-3 border border-neutral-200 focus:border-neutral-900 focus:outline-none transition-colors"
+                        placeholder="e.g., 800 students"
                       />
                     </div>
                   </div>
+                </div>
+              </div>
 
-                  {/* Why partner — required filter */}
+              {/* Contact Information */}
+              <div>
+                <h3 className="text-sm tracking-widest uppercase text-neutral-400 mb-4">
+                  Contact Information
+                </h3>
+                <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs tracking-widest uppercase text-neutral-400 mb-2">
-                      Why does your school want to partner with STEMForge? *
+                    <label className="block text-sm text-neutral-700 mb-2">
+                      Phone / WhatsApp <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={form.phone}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-3 border border-neutral-200 focus:border-neutral-900 focus:outline-none transition-colors"
+                      placeholder="e.g., +254 712 345 678"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-neutral-700 mb-2">
+                      Email <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={form.email}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-3 border border-neutral-200 focus:border-neutral-900 focus:outline-none transition-colors"
+                      placeholder="e.g., jane@school.ac.ke"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* STEM Interest */}
+              <div>
+                <h3 className="text-sm tracking-widest uppercase text-neutral-400 mb-4">
+                  STEM Interest
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm text-neutral-700 mb-2">
+                      Current STEM/ICT Activities
+                    </label>
+                    <textarea
+                      name="current_stem"
+                      value={form.current_stem}
+                      onChange={handleChange}
+                      rows={3}
+                      className="w-full px-4 py-3 border border-neutral-200 focus:border-neutral-900 focus:outline-none transition-colors resize-none"
+                      placeholder="What STEM activities does your school currently offer?"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm text-neutral-700 mb-3">
+                      Which solutions interest you?
+                    </label>
+                    <div className="grid md:grid-cols-2 gap-3">
+                      {programs.map((program) => (
+                        <label
+                          key={program.id}
+                          className="flex items-start gap-3 p-4 border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors"
+                        >
+                          <input
+                            type="checkbox"
+                            name="interested_solutions"
+                            value={program.slug}
+                            checked={form.interested_solutions.includes(program.slug)}
+                            onChange={handleChange}
+                            className="mt-1"
+                          />
+                          <div>
+                            <p className="text-sm font-medium text-neutral-900">{program.title}</p>
+                            <p className="text-xs text-neutral-500">{program.grade_min}–{program.grade_max}</p>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Partnership Intent */}
+              <div>
+                <h3 className="text-sm tracking-widest uppercase text-neutral-400 mb-4">
+                  Partnership Intent
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm text-neutral-700 mb-2">
+                      Why does your school want to partner with STEMForge? <span className="text-red-500">*</span>
                     </label>
                     <textarea
                       name="why_partner"
@@ -232,125 +325,144 @@ const ContactPage = ({ onBookingClick }) => {
                       onChange={handleChange}
                       required
                       rows={4}
-                      placeholder="Tell us about your school's vision and what you hope to achieve…"
-                      className="w-full border border-neutral-200 px-4 py-3 text-neutral-900 focus:outline-none focus:border-neutral-400 transition-colors resize-none"
+                      className="w-full px-4 py-3 border border-neutral-200 focus:border-neutral-900 focus:outline-none transition-colors resize-none"
+                      placeholder="Tell us about your school's vision for STEM education and why you think STEMForge is the right partner."
                     />
                   </div>
 
-                  {/* Preferred time */}
                   <div>
-                    <label className="block text-xs tracking-widest uppercase text-neutral-400 mb-2">
+                    <label className="block text-sm text-neutral-700 mb-2">
                       Preferred Time for Discovery Call
                     </label>
-                    <select
-                      name="preferred_time"
-                      value={form.preferred_time}
-                      onChange={handleChange}
-                      className="w-full border border-neutral-200 px-4 py-3 text-neutral-900 focus:outline-none focus:border-neutral-400 transition-colors bg-white"
-                    >
-                      <option value="">No preference</option>
-                      <option value="morning">Weekday Morning (8–12)</option>
-                      <option value="afternoon">Weekday Afternoon (12–5)</option>
-                      <option value="saturday">Saturday Morning</option>
-                    </select>
+                    <div className="flex flex-wrap gap-3">
+                      {TIME_SLOTS.map((slot) => (
+                        <label
+                          key={slot}
+                          className={`px-4 py-2 border cursor-pointer transition-colors ${
+                            form.preferred_time === slot
+                              ? 'border-neutral-900 bg-neutral-900 text-white'
+                              : 'border-neutral-200 hover:border-neutral-400'
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="preferred_time"
+                            value={slot}
+                            checked={form.preferred_time === slot}
+                            onChange={handleChange}
+                            className="sr-only"
+                          />
+                          <span className="text-sm">{slot}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
 
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full bg-neutral-900 text-white py-4 text-sm tracking-wide hover:bg-neutral-800 transition-colors inline-flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {loading ? (
-                      <>
-                        <Loader2 size={16} className="animate-spin" />
-                        Submitting…
-                      </>
-                    ) : (
-                      <>
-                        Request Discovery Session
-                        <ArrowRight size={16} />
-                      </>
-                    )}
-                  </button>
+                  <div>
+                    <label className="block text-sm text-neutral-700 mb-2">
+                      Additional Notes
+                    </label>
+                    <textarea
+                      name="additional_notes"
+                      value={form.additional_notes}
+                      onChange={handleChange}
+                      rows={3}
+                      className="w-full px-4 py-3 border border-neutral-200 focus:border-neutral-900 focus:outline-none transition-colors resize-none"
+                      placeholder="Any other information you'd like to share..."
+                    />
+                  </div>
+                </div>
+              </div>
 
-                  <p className="text-xs text-neutral-400 text-center leading-relaxed">
-                    We review every inquiry personally. If there's mutual alignment, we'll schedule
-                    a 30-minute discovery call within 48 hours. Pilot partnership rates are extended
-                    to select first-time institutional partners.
-                  </p>
-                </form>
-              </>
-            )}
+              {/* Submit */}
+              <div className="pt-4">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full md:w-auto px-8 py-4 bg-neutral-900 text-white text-sm tracking-wide hover:bg-neutral-800 transition-colors inline-flex items-center justify-center gap-3 disabled:opacity-50"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    <>
+                      Request Discovery Session
+                      <ArrowRight size={16} />
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
 
-          {/* Contact Info */}
-          <div>
-            <div className="space-y-8 mb-12">
-              <div className="flex gap-4">
-                <div className="w-12 h-12 bg-neutral-100 flex items-center justify-center flex-shrink-0">
-                  <MapPin size={20} className="text-neutral-500" />
-                </div>
-                <div>
-                  <h3 className="text-neutral-900 font-medium mb-1">Location</h3>
-                  <p className="text-neutral-600 font-light">
-                    Westlands, Nairobi<br />
-                    Kenya
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex gap-4">
-                <div className="w-12 h-12 bg-neutral-100 flex items-center justify-center flex-shrink-0">
-                  <Phone size={20} className="text-neutral-500" />
-                </div>
-                <div>
-                  <h3 className="text-neutral-900 font-medium mb-1">Phone / WhatsApp</h3>
-                  <p className="text-neutral-600 font-light">
-                    <a href="tel:+254740532120" className="hover:text-neutral-900 transition-colors">
-                      +254 740 532 120
-                    </a>
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex gap-4">
-                <div className="w-12 h-12 bg-neutral-100 flex items-center justify-center flex-shrink-0">
-                  <Mail size={20} className="text-neutral-500" />
-                </div>
-                <div>
-                  <h3 className="text-neutral-900 font-medium mb-1">Email</h3>
-                  <p className="text-neutral-600 font-light">
-                    <a href="mailto:admissions@stemforge.co.ke" className="hover:text-neutral-900 transition-colors">
-                      admissions@stemforge.co.ke
-                    </a>
-                  </p>
+          {/* Sidebar */}
+          <aside className="lg:col-span-1">
+            <div className="sticky top-32 space-y-8">
+              <div className="bg-neutral-50 p-6">
+                <h3 className="text-sm tracking-widest uppercase text-neutral-400 mb-4">
+                  What Happens Next
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex gap-4">
+                    <div className="w-8 h-8 rounded-full bg-neutral-900 text-white flex items-center justify-center text-sm font-medium shrink-0">
+                      1
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-neutral-900">Review</p>
+                      <p className="text-sm text-neutral-500">We review your inquiry within 24 hours</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="w-8 h-8 rounded-full bg-neutral-200 text-neutral-600 flex items-center justify-center text-sm font-medium shrink-0">
+                      2
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-neutral-900">Discovery Call</p>
+                      <p className="text-sm text-neutral-500">30-minute call to understand your needs</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="w-8 h-8 rounded-full bg-neutral-200 text-neutral-600 flex items-center justify-center text-sm font-medium shrink-0">
+                      3
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-neutral-900">Custom Proposal</p>
+                      <p className="text-sm text-neutral-500">Tailored solution and pilot pricing</p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex gap-4">
-                <div className="w-12 h-12 bg-neutral-100 flex items-center justify-center flex-shrink-0">
-                  <Clock size={20} className="text-neutral-500" />
-                </div>
-                <div>
-                  <h3 className="text-neutral-900 font-medium mb-1">Hours</h3>
-                  <p className="text-neutral-600 font-light">
-                    Monday – Friday: 8:00 AM – 5:00 PM<br />
-                    Saturday: 9:00 AM – 1:00 PM
-                  </p>
+              <div className="bg-neutral-50 p-6">
+                <h3 className="text-sm tracking-widest uppercase text-neutral-400 mb-4">
+                  Contact Directly
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 text-sm text-neutral-600">
+                    <Phone size={16} className="text-neutral-400" />
+                    <span>[Your Phone/WhatsApp]</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm text-neutral-600">
+                    <Mail size={16} className="text-neutral-400" />
+                    <span>[Your Email]</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm text-neutral-600">
+                    <MapPin size={16} className="text-neutral-400" />
+                    <span>Nairobi, Kenya</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm text-neutral-600">
+                    <Clock size={16} className="text-neutral-400" />
+                    <span>Response within 48 hours</span>
+                  </div>
                 </div>
               </div>
             </div>
-
-            <div className="border border-neutral-200 p-6 text-sm text-neutral-600 font-light leading-relaxed">
-              <p className="text-neutral-900 font-normal mb-2">Not every school is a fit.</p>
-              <p>
-                We select partners aligned with our mission. Our discovery call is a conversation—not a sales pitch—to explore whether there's genuine alignment between your institution's vision and ours.
-              </p>
-            </div>
-          </div>
+          </aside>
         </div>
       </div>
-    </main>
+    </div>
   );
 };
 
