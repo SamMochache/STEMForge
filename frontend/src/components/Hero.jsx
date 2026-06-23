@@ -15,6 +15,7 @@ const Hero = ({ onApplyClick }) => (
         </p>
 
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-white leading-tight mb-8 tracking-tight">
+          <br/>
           Cultivating the next generation of
           <span className="block mt-2 font-normal">extraordinary minds</span>
         </h1>

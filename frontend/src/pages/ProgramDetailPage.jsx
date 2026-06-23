@@ -10,109 +10,134 @@ const ProgramDetailPage = ({ onApplyClick }) => {
   const [error, setError] = useState(null);
 
   // Additional content for each program type
+  // Replace the entire programContent object with B2B content
   const programContent = {
-    'python-young-coders': {
-      overview: `Our Python for Young Coders program introduces students to text-based programming in the most engaging way possible. Rather than learning abstract syntax, students write code to create games, animations, and interactive projects from day one. This hands-on approach ensures that concepts like variables, loops, and conditionals become intuitive, not intimidating.`,
+    'ai-literacy': {
+      overview: `Students don't just learn about AI—they build with it. This solution integrates generative tools, data literacy, and ethical evaluation into a cohesive learning experience. By the end of the term, every student has trained a model, evaluated its outputs for bias, and designed a human-centered application.`,
       whatYouGet: [
-        'Professional Python IDE setup and configuration',
-        'Access to STEMForge\'s curated learning platform',
-        'Weekly 1-hour group sessions plus optional office hours',
-        'Portfolio of 8-10 complete projects',
-        'Completion certificate recognized in academic circles',
-        'Lifetime access to recorded lessons'
+        'Curriculum aligned with CBC Science & Technology strand',
+        'AI-assisted learning platform access',
+        'Trained facilitators for in-school delivery',
+        'Assessment rubrics and progress dashboards',
+        'Termly competency reports for school leadership',
+        'Student AI prototype portfolio'
       ],
       curriculum: [
-        { week: '1-3', topic: 'Python Fundamentals', details: 'Variables, data types, operators, input/output. Build your first calculator app.' },
-        { week: '4-6', topic: 'Control Flow', details: 'Conditionals (if/else), loops (for/while). Create a guessing game.' },
-        { week: '7-10', topic: 'Functions & Data', details: 'Defining functions, lists, dictionaries. Build a task management system.' },
-        { week: '11-14', topic: 'Advanced Projects', details: 'Turtle graphics, games, data visualization. Complete capstone project.' },
+        { week: '1-3', topic: 'Generative AI Fundamentals', details: 'Prompt engineering, model behavior, output evaluation. Build first AI-powered tool.' },
+        { week: '4-6', topic: 'Data Literacy', details: 'Training data, bias detection, data quality. Analyze real datasets for fairness.' },
+        { week: '7-9', topic: 'Ethics & Human-Centered Design', details: 'AI ethics frameworks, stakeholder analysis, design principles.' },
+        { week: '10-12', topic: 'Capstone Prototype', details: 'Build and present a functioning AI prototype solving a local problem.' },
       ],
       outcomes: [
-        'Write clean, well-organized Python code',
-        'Solve problems algorithmically',
-        'Debug code effectively',
-        'Understand computer science fundamentals',
-        'Transition to advanced programming'
+        'Use generative AI tools effectively and critically',
+        'Evaluate AI outputs for bias and accuracy',
+        'Design human-centered AI applications',
+        'Understand data quality and its impact on models',
+        'Present technical work to non-technical audiences'
       ],
-      mentoring: 'Each student receives personalized feedback on every project. Our instructors identify learning patterns and provide targeted guidance to overcome challenges.',
-      community: 'Join a community of young coders. Participate in code reviews, collaborative projects, and friendly competitions. Share your work and learn from peers.',
+      mentoring: 'Our facilitators are AI practitioners with classroom experience. They guide students through the productive uncertainty of working with generative systems—knowing when to trust, when to challenge, and when human judgment is essential.',
+      community: 'Partner schools join a network of institutions exploring AI in education. Share best practices, compare student outcomes, and access quarterly facilitator training updates.',
     },
-    'robotics-engineering': {
-      overview: `This is not just a robotics class—it's an engineering immersion. Students learn mechanical principles, electrical concepts, and programming together. They'll construct robots that navigate mazes, sort objects, and solve real-world challenges. Every failure becomes a lesson in the scientific method.`,
+    'coding-development': {
+      overview: `A progressive pathway from Python fundamentals to deployable full-stack applications. Students write production-quality code, use version control, and build a professional portfolio that demonstrates real capability—not just completion.`,
       whatYouGet: [
-        'Professional Arduino and sensor kits (yours to keep)',
-        'Access to state-of-the-art maker labs',
-        'Weekly hands-on workshops (3 hours each)',
-        'One-on-one engineering mentorship',
-        'Competition coaching and team support',
-        'Professional portfolio documentation'
+        'CBC-aligned coding curriculum',
+        'Cloud-based development environments',
+        'In-school facilitated workshops',
+        'Peer code review and mentorship',
+        'Deployable project portfolio for each student',
+        'Termly progress dashboards'
       ],
       curriculum: [
-        { week: '1-2', topic: 'Electronics Basics', details: 'Circuits, breadboards, resistors, LEDs, multimeters. Build your first circuit.' },
-        { week: '3-4', topic: 'Arduino Fundamentals', details: 'Microcontroller programming, I/O pins, sensor basics.' },
-        { week: '5-7', topic: 'Mechanical Design', details: 'CAD software intro, 3D printing, structural design. Design custom robot chassis.' },
-        { week: '8-12', topic: 'System Integration', details: 'Combining mechanics, electronics, and code. Build autonomous robots.' },
+        { week: '1-4', topic: 'Python Fundamentals', details: 'Variables, control flow, functions, data structures. Build CLI tools and games.' },
+        { week: '5-8', topic: 'Web Development', details: 'HTML, CSS, JavaScript, responsive design. Deploy first website.' },
+        { week: '9-11', topic: 'Full-Stack Integration', details: 'React, APIs, databases. Build a complete web application.' },
+        { week: '12-14', topic: 'Portfolio & Deployment', details: 'Version control, testing, cloud deployment. Final project showcase.' },
       ],
       outcomes: [
-        'Master Arduino microcontroller programming',
-        'Understand electrical circuits and sensor integration',
-        'Design and build mechanical systems',
-        'Develop troubleshooting and debugging skills',
-        'Prepare for robotics competitions'
+        'Write clean, well-structured Python and JavaScript',
+        'Build and deploy full-stack web applications',
+        'Use version control and collaborative development workflows',
+        'Debug code systematically and independently',
+        'Present a professional code portfolio'
       ],
-      mentoring: 'Our instructors are competition-winning roboticists and engineers. They provide real-time guidance, help you troubleshoot complex problems, and prepare you for advanced competitions.',
-      community: 'Collaborate with other young engineers on team projects. Participate in inter-cohort competitions. Network with industry professionals through our monthly tech talks.',
+      mentoring: 'Facilitators are software engineers with teaching experience. They provide real-time code review, architecture guidance, and industry context that textbooks cannot replicate.',
+      community: 'Students contribute to shared repositories, participate in peer reviews, and showcase work at term-end demo days. Partner schools receive access to our facilitator community for ongoing support.',
     },
-    'artificial-intelligence': {
-      overview: `Step into the future with our AI and Machine Learning program. From training your first neural network to building a computer vision app, you'll explore cutting-edge technology. Understand how AI works beneath the surface—and build your own intelligent systems.`,
+    'robotics-physical-computing': {
+      overview: `Hands-on engineering from first principles. Students program microcontrollers, integrate sensors, and build autonomous systems. Every student leaves with a functioning robot they designed, built, and programmed—not a kit they assembled.`,
       whatYouGet: [
-        'Premium access to GPU computing resources',
-        'TensorFlow and PyTorch project licenses',
-        'Advanced AI/ML course materials',
-        'Weekly live coding sessions with ML engineers',
-        'Real dataset access (Kaggle, UCI, etc.)',
-        'Industry mentor from tech company'
+        'Arduino and sensor kits for each student',
+        'Mechanical prototyping materials',
+        'In-school workshop facilitation',
+        'Competition and showcase opportunities',
+        'Build guides and safety protocols',
+        'Termly progress assessments'
       ],
       curriculum: [
-        { week: '1-2', topic: 'Machine Learning Fundamentals', details: 'Supervised learning, regression, classification. Build your first ML model.' },
-        { week: '3-5', topic: 'Neural Networks', details: 'Deep learning basics, backpropagation, activation functions.' },
-        { week: '6-8', topic: 'Computer Vision', details: 'Image classification, object detection, CNN architectures.' },
-        { week: '9-12', topic: 'NLP & Advanced Topics', details: 'Text processing, sentiment analysis, transformer models.' },
-        { week: '13-18', topic: 'Capstone Project', details: 'Build and deploy an AI application solving a real problem.' },
+        { week: '1-3', topic: 'Electronics & Circuits', details: 'Breadboards, resistors, LEDs, multimeters. Build and test circuits.' },
+        { week: '4-7', topic: 'Microcontroller Programming', details: 'Arduino IDE, I/O pins, sensor integration. Program responsive systems.' },
+        { week: '8-10', topic: 'Mechanical Design', details: 'CAD basics, 3D printing, structural design. Build custom chassis.' },
+        { week: '11-14', topic: 'Autonomous Systems', details: 'Sensor fusion, decision logic, navigation. Build autonomous robot.' },
       ],
       outcomes: [
-        'Understand machine learning theory and practice',
-        'Train and optimize neural networks',
-        'Build computer vision applications',
-        'Process and analyze large datasets',
-        'Deploy ML models to production',
-        'Think critically about AI ethics'
+        'Program Arduino microcontrollers for real-world tasks',
+        'Design and integrate sensor-based automation systems',
+        'Build mechanical prototypes using CAD and 3D printing',
+        'Troubleshoot hardware-software integration issues',
+        'Document and present engineering work professionally'
       ],
-      mentoring: 'Mentored by AI/ML specialists from leading tech companies. They share industry insights, real-world challenges, and best practices.',
-      community: 'Present at our monthly AI showcase. Collaborate on research projects. Access exclusive Kaggle competition team opportunities.',
+      mentoring: 'Facilitators are robotics engineers and competition veterans. They guide students through the iterative cycle of build-test-fail-improve that defines real engineering practice.',
+      community: 'Partner schools gain access to inter-school robotics showcases and regional competition pipelines. Students collaborate on team challenges and mentor younger cohorts.',
+    },
+    'innovation-entrepreneurship': {
+      overview: `Entrepreneurship as pedagogy, not just a subject. Students identify real problems, validate solutions with actual customers, and launch micro-ventures with revenue. The venture is the curriculum—not a project at the end of it.`,
+      whatYouGet: [
+        'Venture creation framework and curriculum',
+        'Mentor network of Kenyan founders and investors',
+        'In-school facilitated workshops',
+        'Demo day and pitch opportunities',
+        'Business model validation tools',
+        'Termly venture outcome reports'
+      ],
+      curriculum: [
+        { week: '1-3', topic: 'Problem & Market', details: 'Identify problems, customer interviews, market sizing. Validate before building.' },
+        { week: '4-6', topic: 'Solution & Model', details: 'Prototyping, business model canvas, unit economics. Test assumptions cheaply.' },
+        { week: '7-9', topic: 'Launch & Iterate', details: 'Customer acquisition, revenue testing, feedback loops. Launch real venture.' },
+        { week: '10-12', topic: 'Scale & Pitch', details: 'Growth tactics, pitch preparation, demo day. Present to real stakeholders.' },
+      ],
+      outcomes: [
+        'Identify and frame problems worth solving',
+        'Validate business models with real customers',
+        'Launch revenue-generating micro-ventures',
+        'Iterate based on market feedback',
+        'Pitch ventures to investors and community leaders'
+      ],
+      mentoring: 'Mentors are active founders, not academics. They share war stories, introduce networks, and push students to confront the gap between a plan and reality.',
+      community: 'Partner schools host rotating demo days where students pitch to local business leaders. Top ventures receive seed funding and continued mentorship through our alumni network.',
     },
   };
 
-  // Default content for programs without custom data
+  // Also update the default content
   const defaultContent = {
-    overview: `This comprehensive program combines theoretical knowledge with hands-on practical experience. Students develop mastery through project-based learning, working on real challenges that matter.`,
+    overview: `This solution combines theoretical knowledge with hands-on practical experience. Students develop mastery through project-based learning, working on real challenges that matter to their communities.`,
     whatYouGet: [
-      'Professional-grade tools and software',
-      'Access to STEMForge facilities and resources',
-      'Weekly instructor-led sessions',
-      'Personalized feedback and mentorship',
-      'Completion certificate',
-      'Lifetime community access'
+      'CBC-aligned curriculum and lesson plans',
+      'Professional-grade tools and platforms',
+      'Trained facilitators for in-school delivery',
+      'Assessment rubrics and progress dashboards',
+      'Termly competency reports',
+      'Student project portfolios'
     ],
     curriculum: [],
     outcomes: [
       'Master core concepts and technologies',
       'Build a professional project portfolio',
-      'Develop problem-solving skills',
-      'Prepare for advanced opportunities'
+      'Develop problem-solving and critical thinking skills',
+      'Prepare for advanced academic and career opportunities'
     ],
-    mentoring: 'Receive expert guidance from instructors with years of industry experience.',
-    community: 'Learn alongside peers with shared interests. Collaborate on projects and grow together.',
+    mentoring: 'Receive expert guidance from facilitators with industry experience, trained specifically for in-school delivery.',
+    community: 'Join a network of partner schools sharing best practices, student outcomes, and continuous curriculum improvements.',
   };
 
   useEffect(() => {
