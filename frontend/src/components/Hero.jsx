@@ -1,46 +1,61 @@
 import { ArrowRight, Play } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-const Hero = ({ onApplyClick }) => (
-  <section className="min-h-screen bg-neutral-900 relative flex items-end pb-20 md:pb-32">
-    {/* Subtle gradient overlay */}
-    <div className="absolute inset-0 bg-gradient-to-b from-neutral-900 via-neutral-900/95 to-neutral-800" />
+const Hero = ({ onApplyClick, onBookingClick }) => {
+  const navigate = useNavigate();
 
-    {/* Minimal line accent */}
-    <div className="absolute top-1/3 right-0 w-px h-48 bg-gradient-to-b from-transparent via-neutral-600 to-transparent hidden lg:block" />
+  return (
+    <section className="min-h-screen bg-neutral-900 relative flex items-end pb-20 md:pb-32">
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-neutral-900 via-neutral-900/95 to-neutral-800" />
 
-    <div className="relative z-10 max-w-7xl mx-auto px-8 w-full">
-      <div className="max-w-4xl">
-        <p className="text-neutral-500 text-sm tracking-widest uppercase mb-8">
-          STEMFORGE | NAIROBI, KENYA
-        </p>
+      {/* Minimal line accent */}
+      <div className="absolute top-1/3 right-0 w-px h-48 bg-gradient-to-b from-transparent via-neutral-600 to-transparent hidden lg:block" />
 
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-white leading-tight mb-8 tracking-tight">
-          <br/>
-          Cultivating the next generation of
-          <span className="block mt-2 font-normal">extraordinary minds</span>
-        </h1>
+      <div className="relative z-10 max-w-7xl mx-auto px-8 w-full">
+        <div className="max-w-4xl">
 
-        <p className="text-neutral-400 text-lg md:text-xl font-light max-w-xl mb-6 leading-relaxed">
-          A Future Skills Academy for African secondary schools. We partner with visionary
-          institutions to equip students with AI literacy, entrepreneurial mindset, and the
-          classical liberal values that drive innovation and human flourishing.
-        </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 sm:gap-8">
-          <button
-            onClick={onApplyClick}
-            className="group bg-white text-neutral-900 px-8 py-4 text-sm tracking-wide hover:bg-neutral-100 transition-all inline-flex items-center gap-3"
-          >
-            Explore Partnership
-            <ArrowRight
-              size={16}
-              className="group-hover:translate-x-1 transition-transform"
-            />
-          </button>
-          <button className="group text-white px-8 py-4 text-sm tracking-wide border border-neutral-700 hover:border-neutral-500 transition-all inline-flex items-center gap-3">
-            <Play size={14} />
-            Discover Our Approach
-          </button>
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-white leading-tight mb-8 tracking-tight">
+            <br/>
+            Cultivating the next generation of
+            <span className="block mt-2 font-normal">extraordinary minds</span>
+          </h1>
+
+          <p className="text-neutral-400 text-lg md:text-xl font-light max-w-xl mb-6 leading-relaxed">
+            Partnering with visionary institutions to equip students with <br/>
+            AI literacy, coding & robotics, programming, entrepreneurial thinking, and the classical liberal values that
+            foster innovation, creativity, and human flourishing.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-8">
+            <button
+              onClick={() => navigate('/contact')}
+              className="group bg-white text-neutral-900 px-8 py-4 text-sm tracking-wide hover:bg-neutral-100 transition-all inline-flex items-center gap-3"
+            >
+              Explore Partnership
+              <ArrowRight
+                size={16}
+                className="group-hover:translate-x-1 transition-transform"
+              />
+            </button>
+            <button
+              onClick={() => {
+                // Scroll to The Model section or handle appropriately
+                const modelSection = document.getElementById('the-model-section');
+                if (modelSection) {
+                  modelSection.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                  // Fallback: alert or do nothing
+                  console.log('The Model section not found');
+                }
+              }}
+              className="group text-white px-8 py-4 text-sm tracking-wide border border-neutral-700 hover:border-neutral-500 transition-all inline-flex items-center gap-3"
+            >
+              <Play size={14} />
+              Discover Our Approach
+            </button>
+          </div>
         </div>
       </div>
 
@@ -58,8 +73,8 @@ const Hero = ({ onApplyClick }) => (
         </span>
         <div className="w-px h-16 bg-gradient-to-b from-neutral-600 to-transparent" />
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 export default Hero;

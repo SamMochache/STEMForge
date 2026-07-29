@@ -6,18 +6,41 @@ import TheModel from '../components/TheModel';
 import WhySTEMForge from '../components/WhySTEMForge';
 import Testimonial from '../components/Testimonial';
 import CTA from '../components/CTA';
+import ApplicationModal from '../components/ApplicationModal';
+import BookingModal from '../components/BookingModal';
+import { useState } from 'react';
 
-const HomePage = ({ onApplyClick, onBookingClick }) => {
+const HomePage = () => {
+  const [isApplicationOpen, setIsApplicationOpen] = useState(false);
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+
+  const openApplicationModal = (programData) => {
+    setIsApplicationOpen(true);
+    // Pass program data if available
+    if (programData) {
+      // Store program data somewhere accessible to the modal if needed
+      // For now, we'll just open the modal and let it fetch programs
+    }
+  };
+
+  const closeApplicationModal = () => {
+    setIsApplicationOpen(false);
+  };
+
+  const openBookingModal = () => {
+    setIsBookingOpen(true);
+  };
+
+  const closeBookingModal = () => {
+    setIsBookingOpen(false);
+  };
+
   return (
     <>
-      <Hero onApplyClick={onApplyClick} />
-      <Stats />
-      <Philosophy />
-      <Programs onApplyClick={onApplyClick} />
-      <TheModel onApplyClick={onApplyClick} />
-      <WhySTEMForge />
-      <Testimonial />
-      <CTA onApplyClick={onApplyClick} onBookingClick={onBookingClick} />
+      <Hero
+        onApplyClick={openApplicationModal}
+        onBookingClick={openBookingModal}
+      />
     </>
   );
 };
