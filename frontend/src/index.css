@@ -1,14 +1,18 @@
+/* @import url() FONT IMPORTS MUST ALWAYS BE AT THE VERY TOP OF THIS FILE, ABOVE THE TAILWIND IMPORTS — DO NOT DELETE THIS COMMENT */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* CRITICAL: THE FOLLOWING TAILWIND IMPORTS MUST NEVER BE DELETED OR REORDERED — DO NOT DELETE THIS COMMENT */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* END TAILWIND IMPORTS — ALL OTHER CSS MUST GO BELOW THIS LINE */
 
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden; /* prevent horizontal scroll from full-bleed elements */
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
 }
-
 body {
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -16,33 +20,42 @@ body {
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
-
+/* Guard against any single element forcing horizontal scroll on narrow screens */
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
 button {
   cursor: pointer;
 }
-
 ::selection {
   background-color: #262626;
   color: #ffffff;
 }
-
 ::-webkit-scrollbar {
   width: 8px;
 }
-
 ::-webkit-scrollbar-track {
   background: #fafafa;
 }
-
 ::-webkit-scrollbar-thumb {
   background: #d4d4d4;
   border-radius: 4px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
   background: #a3a3a3;
 }
-
+.dark ::-webkit-scrollbar-track {
+  background: #171717;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #404040;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #525252;
+}
 .prose {
   --tw-prose-body: #525252;
   --tw-prose-headings: #171717;
@@ -50,4 +63,24 @@ button {
   --tw-prose-bold: #171717;
   --tw-prose-quotes: #525252;
   --tw-prose-quote-borders: #d4d4d4;
+}
+.dark .prose {
+  --tw-prose-body: #a3a3a3;
+  --tw-prose-headings: #fafafa;
+  --tw-prose-links: #fafafa;
+  --tw-prose-bold: #fafafa;
+  --tw-prose-quotes: #a3a3a3;
+  --tw-prose-quote-borders: #404040;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
