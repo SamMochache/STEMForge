@@ -183,13 +183,12 @@ else:
     # instead of sending them, so nothing breaks if SMTP isn't configured yet.
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'no-reply@stemforge.co.ke')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
 
 # Where inquiry notification emails get sent. Comma-separated list so you
 # can send to admissions@ and support@ at once.
 INQUIRY_NOTIFICATION_RECIPIENTS = [
     e.strip() for e in os.environ.get(
-        'INQUIRY_NOTIFICATION_RECIPIENTS',
-        'admissions@stemforge.co.ke'
+        'INQUIRY_NOTIFICATION_RECIPIENTS'
     ).split(',') if e.strip()
 ]
