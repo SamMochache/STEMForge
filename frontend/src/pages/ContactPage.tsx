@@ -15,7 +15,9 @@ import { programs } from '../data/programs';
 // frontend project root to point this at your deployed backend, e.g.
 //   VITE_API_URL=https://api.stemforge.co.ke/api/inquiries/
 // Falls back to the local Django dev server address if unset.
-const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/inquiries/';
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  'http://127.0.0.1:8000/api/inquiries/';
 
 interface ContactForm {
   school_name: string;
