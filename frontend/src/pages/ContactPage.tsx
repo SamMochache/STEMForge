@@ -11,6 +11,12 @@ import {
 'lucide-react';
 import { programs } from '../data/programs';
 
+// URL of the inquiries backend. Set VITE_API_URL in a .env file at the
+// frontend project root to point this at your deployed backend, e.g.
+//   VITE_API_URL=https://api.stemforge.co.ke/api/inquiries/
+// Falls back to the local Django dev server address if unset.
+const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/inquiries/';
+
 interface ContactForm {
   school_name: string;
   contact_name: string;
@@ -24,6 +30,10 @@ interface ContactForm {
   email: string;
   preferred_time: string;
   additional_notes: string;
+  // Honeypot field: left blank by real visitors, invisible on screen.
+  // A bot that auto-fills every input on a form will fill this in, and
+  // the backend silently rejects the submission when it's non-empty.
+  website: string;
 }
 
 const INITIAL_FORM: ContactForm = {
@@ -38,7 +48,8 @@ const INITIAL_FORM: ContactForm = {
   phone: '',
   email: '',
   preferred_time: '',
-  additional_notes: ''
+  additional_notes: '',
+  website: ''
 };
 
 const SCHOOL_TYPES = [
@@ -85,12 +96,15 @@ export function ContactPage() {
     setError(null);
 
     try {
-      const stored = window.localStorage.getItem('stemforge_inquiries');
-      const submissions = stored ? JSON.parse(stored) : [];
-      submissions.push({ ...form, submitted_at: new Date().toISOString(), id: Date.now() });
-      window.localStorage.setItem('stemforge_inquiries', JSON.stringify(submissions));
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form)
+      });
 
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      if (!response.ok) {
+        throw new Error('Submission failed');
+      }
 
       setSuccess(true);
       setForm(INITIAL_FORM);
@@ -158,6 +172,23 @@ export function ContactPage() {
             }
 
             <form onSubmit={handleSubmit} className="space-y-8">
+              {/* Honeypot field — hidden from real visitors, catches simple bots.
+                  Do not remove the styling below; it must stay invisible and
+                  unreachable by tab so sighted and keyboard/screen-reader users
+                  never see or interact with it. */}
+              <div style={{ position: 'absolute', left: '-9999px' }} aria-hidden="true">
+                <label htmlFor="website">Website</label>
+                <input
+                  id="website"
+                  type="text"
+                  name="website"
+                  value={form.website}
+                  onChange={handleChange}
+                  autoComplete="off"
+                  tabIndex={-1} />
+                
+              </div>
+
               {/* School information */}
               <fieldset>
                 <legend className="text-xs sm:text-sm tracking-widest uppercase text-neutral-400 dark:text-neutral-500 mb-4">
