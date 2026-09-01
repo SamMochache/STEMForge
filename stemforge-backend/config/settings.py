@@ -20,6 +20,11 @@ load_dotenv()  # reads a local .env file in development; in production, set real
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # --- Core security settings -------------------------------------------------
+# --- Core security settings -------------------------------------------------
+
+# ADD THESE TWO LINES RIGHT HERE:
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
 # --- ALLOWED HOSTS CONFIGURATION ---
 # 1. Pull basic hosts from your environment variables
