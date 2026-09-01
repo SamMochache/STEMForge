@@ -20,38 +20,15 @@ load_dotenv()  # reads a local .env file in development; in production, set real
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # --- Core security settings -------------------------------------------------
-# --- Core security settings -------------------------------------------------
 
-# ADD THESE TWO LINES RIGHT HERE:
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'dev-only-insecure-key-change-me')
+
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
-# --- ALLOWED HOSTS CONFIGURATION ---
-# 1. Pull basic hosts from your environment variables
-ALLOWED_HOSTS = [host.strip() for host in os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',') if host.strip()]
+ALLOWED_HOSTS = [
+    h.strip() for h in os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if h.strip()
+]
 
-# 2. Add local testing fallback defaults if they aren't in the .env file
-if 'localhost' not in ALLOWED_HOSTS:
-    ALLOWED_HOSTS.extend(['127.0.0.1', 'localhost'])
-
-# 3. CRITICAL: Automatically read Vercel's system domain if it exists
-VERCEL_URL = os.environ.get('VERCEL_URL')
-if VERCEL_URL:
-    ALLOWED_HOSTS.append(VERCEL_URL)        # Catches the exact branch deployment URL
-    ALLOWED_HOSTS.append('.vercel.app')     # Wildcard catches ANY subdomain on Vercel
-
-
-# --- CSRF & CORS TRUSTED ORIGINS ---
-# Extract base origins from your environment
-CORS_ALLOWED_ORIGINS = [origin.strip() for origin in os.environ.get('CORS_ALLOWED_ORIGINS', '').split(',') if origin.strip()]
-
-# Django requires CSRF trusted origins to be explicitly listed with protocols
-CSRF_TRUSTED_ORIGINS = [origin for origin in CORS_ALLOWED_ORIGINS]
-
-# If running on Vercel, trust the Vercel system-generated domains for API requests too
-if VERCEL_URL:
-    CSRF_TRUSTED_ORIGINS.append(f"https://{VERCEL_URL}")
-    CSRF_TRUSTED_ORIGINS.append("https://*.vercel.app")
 # --- Applications -------------------------------------------------------------
 
 INSTALLED_APPS = [
@@ -68,7 +45,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # serves admin CSS/JS in production (no separate file server needed)
     'corsheaders.middleware.CorsMiddleware',  # must sit high, before CommonMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -144,20 +121,36 @@ TIME_ZONE = 'Africa/Nairobi'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'  # The folder where Django will gather static files
+# --- Static files (admin CSS/JS, DRF browsable-API CSS) -------------------------
+# With DEBUG=False (correct for production), Django itself stops serving
+# /static/ files — that's why the admin looks like raw unstyled HTML on
+# Vercel. WhiteNoise serves them instead, straight from files collected
+# at build time (see vercel_build.sh) — no separate file host needed.
 
-# Optimized storage for WhiteNoise (compresses files for faster loads)
+STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 STORAGES = {
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
     },
 }
 
-
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# --- CORS ----------------------------------------------------------------------
+# The frontend (a separate Vite/React app, likely on a different domain)
+# needs explicit permission to call this API from the browser.
+
+CORS_ALLOWED_ORIGINS = [
+    o.strip() for o in os.environ.get(
+        'CORS_ALLOWED_ORIGINS',
+        'http://localhost:5173,http://127.0.0.1:5173'
+    ).split(',') if o.strip()
+]
 
 # --- Django REST Framework ------------------------------------------------------
 

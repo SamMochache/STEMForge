@@ -1,8 +1,11 @@
 .env
-env
 db.sqlite3
 __pycache__/
 *.pyc
-.venv/
+env/
 venv/
-staticfiles/
+# NOTE: staticfiles/ is intentionally NOT ignored — it holds the
+# collected admin/DRF CSS+JS that WhiteNoise serves in production.
+# Vercel's Python runtime doesn't run a build step for us, so these
+# files must be committed. Re-run `python manage.py collectstatic`
+# and commit the result whenever Django/DRF/admin versions change.
