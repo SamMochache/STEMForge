@@ -150,9 +150,10 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'  # The folder where Django will gather st
 # Optimized storage for WhiteNoise (compresses files for faster loads)
 STORAGES = {
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
+
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
