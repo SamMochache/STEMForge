@@ -44,9 +44,10 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # must sit high, before CommonMiddleware
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',  # serves admin CSS/JS in production (no separate file server needed)
-    'corsheaders.middleware.CorsMiddleware',  # must sit high, before CommonMiddleware
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -146,11 +147,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # needs explicit permission to call this API from the browser.
 
 CORS_ALLOWED_ORIGINS = [
-    o.strip() for o in os.environ.get(
-        'CORS_ALLOWED_ORIGINS',
-        'http://localhost:5173,http://127.0.0.1:5173'
-    ).split(',') if o.strip()
+    origin.strip()
+    for origin in os.getenv("CORS_ALLOWED_ORIGINS", "").split(",")
+    if origin.strip()
 ]
+
 
 # --- Django REST Framework ------------------------------------------------------
 
