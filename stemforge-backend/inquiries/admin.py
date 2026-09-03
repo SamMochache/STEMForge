@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Inquiry
+from .models import Inquiry, Lead
 
 
 @admin.register(Inquiry)
@@ -15,4 +15,15 @@ class InquiryAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         # Inquiries only ever come in through the public form.
+        return False
+
+
+@admin.register(Lead)
+class LeadAdmin(admin.ModelAdmin):
+    list_display = ('email', 'name', 'source', 'submitted_at', 'email_sent')
+    list_filter = ('source', 'email_sent', 'submitted_at')
+    search_fields = ('email', 'name')
+    readonly_fields = [f.name for f in Lead._meta.fields]
+
+    def has_add_permission(self, request):
         return False

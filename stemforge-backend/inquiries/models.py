@@ -43,3 +43,32 @@ class Inquiry(models.Model):
 
     def __str__(self):
         return f'{self.school_name} — {self.contact_name} ({self.submitted_at:%Y-%m-%d})'
+
+
+class Lead(models.Model):
+    """
+    A low-commitment lead: someone who gave just their email (and
+    optionally a name) in exchange for a free resource, rather than
+    filling out the full partnership inquiry form.
+
+    This exists deliberately as an easier first step than Inquiry —
+    asking a stranger for their institution's budget commitment in one
+    move is a big ask; asking for an email in exchange for something
+    useful is a much smaller one, and warms them up for the bigger ask
+    later.
+    """
+    email = models.EmailField()
+    name = models.CharField(max_length=255, blank=True)
+    # Which lead magnet / free resource they signed up for. Lets you
+    # track which offer is actually converting.
+    source = models.CharField(max_length=100, default='starter_guide')
+
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    email_sent = models.BooleanField(default=False)
+    email_error = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ['-submitted_at']
+
+    def __str__(self):
+        return f'{self.email} — {self.source} ({self.submitted_at:%Y-%m-%d})'

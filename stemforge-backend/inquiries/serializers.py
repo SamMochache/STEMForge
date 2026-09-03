@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Inquiry
+from .models import Inquiry, Lead
 
 
 class InquirySerializer(serializers.ModelSerializer):
@@ -22,5 +22,18 @@ class InquirySerializer(serializers.ModelSerializer):
     def validate_website(self, value):
         if value:
             # Honeypot was filled in -> almost certainly a bot.
+            raise serializers.ValidationError('Spam detected.')
+        return value
+
+
+class LeadSerializer(serializers.ModelSerializer):
+    website = serializers.CharField(required=False, allow_blank=True, write_only=True)
+
+    class Meta:
+        model = Lead
+        fields = ['email', 'name', 'source', 'website']
+
+    def validate_website(self, value):
+        if value:
             raise serializers.ValidationError('Spam detected.')
         return value

@@ -5,8 +5,8 @@ from django.core.mail import send_mail
 from rest_framework import generics, status
 from rest_framework.response import Response
 
-from .models import Inquiry
-from .serializers import InquirySerializer
+from .models import Inquiry, Lead
+from .serializers import InquirySerializer, LeadSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -80,3 +80,58 @@ class InquiryCreateView(generics.CreateAPIView):
             inquiry.email_sent = False
             inquiry.email_error = str(exc)
         inquiry.save(update_fields=['email_sent', 'email_error'])
+
+
+
+class LeadCreateView(generics.CreateAPIView):
+    """
+    POST /api/leads/
+
+    The deliberately-easy first step: email (+ optional name) in
+    exchange for a free resource. Saves the lead, emails them the
+    resource immediately, and notifies staff a new lead came in — so
+    someone can follow up personally rather than leaving it purely
+    automated.
+    """
+    queryset = Lead.objects.all()
+    serializer_class = LeadSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        validated_data = {k: v for k, v in serializer.validated_data.items() if k != 'website'}
+        lead = Lead.objects.create(**validated_data)
+
+        self._send_guide_email(lead)
+        self._notify_staff(lead)
+
+        return Response({'status': 'received', 'id': lead.id}, status=status.HTTP_201_CREATED)
+
+    def _send_guide_email(self, lead: Lead) -> None:
+        try:
+            send_mail(
+                subject='Your STEM Partnership Starter Guide',
+                message=STARTER_GUIDE_TEXT,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[lead.email],
+                fail_silently=False,
+            )
+            lead.email_sent = True
+            lead.email_error = ''
+        except Exception as exc:  # noqa: BLE001
+            logger.exception('Failed to send starter guide email for lead %s', lead.id)
+            lead.email_sent = False
+            lead.email_error = str(exc)
+        lead.save(update_fields=['email_sent', 'email_error'])
+
+    def _notify_staff(self, lead: Lead) -> None:
+        try:
+            send_mail(
+                subject=f'New lead: {lead.email}',
+                message=f'{lead.name or "(no name given)"} <{lead.email}> requested "{lead.source}".',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=settings.INQUIRY_NOTIFICATION_RECIPIENTS,
+                fail_silently=True,  # staff notification failing shouldn't affect the visitor's experience
+            )
+        except Exception:  # noqa: BLE001
+            logger.exception('Failed to send staff lead notification for lead %s', lead.id)

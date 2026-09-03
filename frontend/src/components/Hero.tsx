@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowRightIcon, PlayIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { TrustBar } from './TrustBar';
 
 export function Hero() {
   const navigate = useNavigate();
@@ -56,12 +57,25 @@ export function Hero() {
             </button>
           </div>
 
+          {/* Not ready to talk yet? Lower-commitment path than the full inquiry form. */}
+          <button
+            type="button"
+            onClick={() => {
+              const el = document.getElementById('free-guide-section');
+              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }}
+            className="mt-4 text-neutral-400 hover:text-white text-sm underline underline-offset-4 decoration-neutral-700 hover:decoration-white transition-colors">
+            
+            Not ready yet? Get our free STEM Partnership Starter Guide instead
+          </button>
+
           {/* Trust bar */}
-          <div className="mt-10 md:mt-12 pt-6 md:pt-8 border-t border-neutral-800">
+          <div className="mt-10 md:mt-12 pt-6 md:pt-8 border-t border-neutral-800 space-y-4">
             <p className="text-neutral-500 text-xs sm:text-sm tracking-wide italic max-w-xl">
               By invitation. For institutions committed to shaping Africa&apos;s next generation of
               innovators.
             </p>
+            <TrustBar variant="dark" />
           </div>
         </div>
       </div>
