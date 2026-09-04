@@ -1,7 +1,8 @@
 import logging
+import os
 
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 from rest_framework import generics, status
 from rest_framework.response import Response
 
@@ -11,38 +12,41 @@ from .serializers import InquirySerializer, LeadSerializer
 logger = logging.getLogger(__name__)
 
 
+# The PDF is bundled with the backend and attached directly to the email.
+# This avoids requiring public file hosting or a separate download domain.
+GUIDE_PDF_PATH = os.path.join(
+    os.path.dirname(__file__), 'assets', 'stem-partnership-starter-guide.pdf'
+)
+
+GUIDE_EMAIL_BODY = """\
+Hi {name},
+
+Thanks for requesting the STEM Partnership Starter Guide — it's attached
+as a PDF.
+
+It covers what to actually look for in any STEM provider (not just us),
+a realistic budget range for the Kenyan market, and how STEMForge
+specifically answers the questions we tell you to ask.
+
+If you'd like to talk through any of it for your specific school, no
+obligation — just reply to this email, or book a free discovery call.
+
+— STEMForge
+Westlands, Nairobi, Kenya
+"""
+
+
 class InquiryCreateView(generics.CreateAPIView):
-    """
-    POST /api/inquiries/
-
-    Receives a partnership inquiry from the frontend contact form.
-
-    Flow, in order:
-      1. Validate + save the submission to the database first. This is
-         the durable backup — it happens before anything email-related,
-         so a submission is captured even if the email step fails.
-      2. Attempt to send a notification email to STEMForge staff.
-      3. Record whether the email succeeded on the saved record, so
-         failures are visible in the admin panel and can be followed up
-         on manually rather than silently disappearing.
-
-    The API always returns success to the visitor as long as step 1
-    (saving) succeeded — a temporary email outage on our side shouldn't
-    be shown to the visitor as "something went wrong."
-    """
+    """POST /api/inquiries/ — receive and persist a partnership inquiry."""
     queryset = Inquiry.objects.all()
     serializer_class = InquirySerializer
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        # 'website' honeypot field is write_only and not a model field,
-        # so drop it before saving.
         validated_data = {k: v for k, v in serializer.validated_data.items() if k != 'website'}
         inquiry = Inquiry.objects.create(**validated_data)
-
         self._send_notification_email(inquiry)
-
         return Response(
             {'status': 'received', 'id': inquiry.id},
             status=status.HTTP_201_CREATED,
@@ -75,24 +79,15 @@ class InquiryCreateView(generics.CreateAPIView):
             )
             inquiry.email_sent = True
             inquiry.email_error = ''
-        except Exception as exc:  # noqa: BLE001 - we want to catch any SMTP/network error here
+        except Exception as exc:  # noqa: BLE001
             logger.exception('Failed to send inquiry notification email for inquiry %s', inquiry.id)
             inquiry.email_sent = False
             inquiry.email_error = str(exc)
         inquiry.save(update_fields=['email_sent', 'email_error'])
 
 
-
 class LeadCreateView(generics.CreateAPIView):
-    """
-    POST /api/leads/
-
-    The deliberately-easy first step: email (+ optional name) in
-    exchange for a free resource. Saves the lead, emails them the
-    resource immediately, and notifies staff a new lead came in — so
-    someone can follow up personally rather than leaving it purely
-    automated.
-    """
+    """POST /api/leads/ — save a lead and email the bundled PDF guide."""
     queryset = Lead.objects.all()
     serializer_class = LeadSerializer
 
@@ -109,13 +104,26 @@ class LeadCreateView(generics.CreateAPIView):
 
     def _send_guide_email(self, lead: Lead) -> None:
         try:
-            send_mail(
+            if not os.path.isfile(GUIDE_PDF_PATH):
+                raise FileNotFoundError(
+                    f'STEM Partnership Starter Guide PDF not found at {GUIDE_PDF_PATH}'
+                )
+
+            email = EmailMessage(
                 subject='Your STEM Partnership Starter Guide',
-                message=STARTER_GUIDE_TEXT,
+                body=GUIDE_EMAIL_BODY.format(name=lead.name or 'there'),
                 from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[lead.email],
-                fail_silently=False,
+                to=[lead.email],
             )
+
+            with open(GUIDE_PDF_PATH, 'rb') as guide_file:
+                email.attach(
+                    'STEMForge-Partnership-Starter-Guide.pdf',
+                    guide_file.read(),
+                    'application/pdf',
+                )
+
+            email.send(fail_silently=False)
             lead.email_sent = True
             lead.email_error = ''
         except Exception as exc:  # noqa: BLE001
@@ -131,7 +139,7 @@ class LeadCreateView(generics.CreateAPIView):
                 message=f'{lead.name or "(no name given)"} <{lead.email}> requested "{lead.source}".',
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=settings.INQUIRY_NOTIFICATION_RECIPIENTS,
-                fail_silently=True,  # staff notification failing shouldn't affect the visitor's experience
+                fail_silently=True,
             )
         except Exception:  # noqa: BLE001
             logger.exception('Failed to send staff lead notification for lead %s', lead.id)
