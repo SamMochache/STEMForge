@@ -186,9 +186,9 @@ export function Navigation({ scrolled }: NavigationProps) {
       {open &&
       <div
         id="mobile-menu"
-        className="lg:hidden fixed left-0 right-0 top-20 bottom-0 w-full bg-[#0a0a0a] z-40 overflow-y-auto overscroll-contain px-5 sm:px-6 py-6">
+        className="lg:hidden fixed inset-0 h-[100dvh] w-full bg-[#0a0a0a] z-40 overflow-y-auto overscroll-contain px-6 sm:px-8 pt-28 pb-8 sm:pt-32">
         
-          <nav aria-label="Mobile" className="flex flex-col gap-1 pb-8">
+          <nav aria-label="Mobile" className="flex flex-col gap-2 pb-8">
             {mainNav.map((item) =>
           item.submenu ?
           <div key={item.name} className="border-b border-white/5">
@@ -197,7 +197,7 @@ export function Navigation({ scrolled }: NavigationProps) {
               onClick={() => setMobileSubOpen(!mobileSubOpen)}
               aria-expanded={mobileSubOpen}
               aria-controls="mobile-about-submenu"
-              className="w-full min-h-[48px] flex items-center justify-between py-3 text-lg text-white/60 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded">
+              className="w-full min-h-[56px] flex items-center justify-between py-4 text-xl text-white/60 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded">
               
                     {item.name}
                     <ChevronDownIcon
@@ -229,7 +229,7 @@ export function Navigation({ scrolled }: NavigationProps) {
             to={item.path as string}
             onClick={() => setOpen(false)}
             aria-current={isActive(item.path) ? 'page' : undefined}
-            className={`min-h-[48px] flex items-center py-3 text-lg border-b border-white/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded ${
+            className={`min-h-[56px] flex items-center py-4 text-xl border-b border-white/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded ${
             isActive(item.path) ? 'text-white' : 'text-white/60 hover:text-white'}`
             }>
             
@@ -240,7 +240,7 @@ export function Navigation({ scrolled }: NavigationProps) {
             <Link
             to="/contact"
             onClick={() => setOpen(false)}
-            className="mt-6 w-full py-3.5 bg-white text-[#0a0a0a] font-semibold rounded-full text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a]">
+            className="mt-8 w-full min-h-[56px] px-6 py-4 bg-white text-[#0a0a0a] font-semibold rounded-full text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a]">
             
               Partner With Us
             </Link>
