@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRightIcon } from 'lucide-react';
 
@@ -45,6 +44,21 @@ export function TheModel() {
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-light text-neutral-900 dark:text-neutral-50 leading-tight tracking-tight">
             How we partner with schools
           </h2>
+        </div>
+
+        {/* Video intro — same content as the cards below, cinematic version */}
+        <div className="mb-12 sm:mb-16 rounded-lg overflow-hidden bg-neutral-900">
+          <video
+            className="w-full h-auto block"
+            src="/discover-our-approach.mp4"
+            poster="/discover-our-approach-poster.png"
+            controls
+            playsInline
+            preload="metadata"
+            aria-label="Discover our approach: how STEMForge partners with schools">
+            
+            Your browser doesn&apos;t support embedded video.
+          </video>
         </div>
 
         <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8 mb-10 sm:mb-12">

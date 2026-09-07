@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { MenuIcon, XIcon, ChevronDownIcon } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
