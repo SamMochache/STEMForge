@@ -58,6 +58,8 @@ export function Seo() {
     const program = programMatch ? getProgramBySlug(programMatch[1]) : undefined;
     const post = journalMatch ? getBlogPostBySlug(journalMatch[1]) : undefined;
 
+    const isNotFound = !program && !post && !routeMeta[path];
+
     const meta = program
       ? { title: program.title + ' | STEMForge', description: program.summary }
       : post
@@ -67,7 +69,7 @@ export function Seo() {
     const url = SITE_URL + (path === '/' ? '' : path);
     document.title = meta.title;
     setMeta('description', meta.description);
-    setMeta('robots', path === '/report-abuse' ? 'noindex,follow' : 'index,follow');
+    setMeta('robots', isNotFound || path === '/report-abuse' ? 'noindex,follow' : 'index,follow');
     setProperty('og:title', meta.title);
     setProperty('og:description', meta.description);
     setProperty('og:type', post ? 'article' : 'website');
@@ -78,7 +80,7 @@ export function Seo() {
     setMeta('twitter:title', meta.title);
     setMeta('twitter:description', meta.description);
     setMeta('twitter:image', SITE_URL + '/ceo.png');
-    setCanonical(url);
+    if (!isNotFound) setCanonical(url);
 
     const graph: Record<string, unknown>[] = [
       { '@type': 'Organization', '@id': SITE_URL + '/#organization', name: 'STEMForge', url: SITE_URL, logo: SITE_URL + '/stemforge.svg' },
