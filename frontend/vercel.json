@@ -1,8 +1,23 @@
 {
   "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/about", "destination": "/index.html" },
+    { "source": "/age", "destination": "/index.html" },
+    { "source": "/programs", "destination": "/index.html" },
+    { "source": "/programs/:slug", "destination": "/index.html" },
+    { "source": "/resources", "destination": "/index.html" },
+    { "source": "/journal", "destination": "/index.html" },
+    { "source": "/journal/:slug", "destination": "/index.html" },
+    { "source": "/contact", "destination": "/index.html" },
+    { "source": "/faq", "destination": "/index.html" },
+    { "source": "/press", "destination": "/index.html" },
+    { "source": "/terms", "destination": "/index.html" },
+    { "source": "/privacy", "destination": "/index.html" },
+    { "source": "/cookies", "destination": "/index.html" },
+    { "source": "/report-abuse", "destination": "/index.html" },
+    { "source": "/sitemap", "destination": "/index.html" }
+  ],
+  "redirects": [
+    { "source": "/report", "destination": "/report-abuse", "permanent": true }
   ]
 }
