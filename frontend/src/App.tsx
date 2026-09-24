@@ -27,6 +27,7 @@ import { CookiesPage } from './pages/CookiesPage';
 import { ReportAbusePage } from './pages/ReportAbusePage';
 import { SitemapPage } from './pages/SitemapPage';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { Seo } from './components/Seo';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -51,6 +52,7 @@ function AppContent() {
   return (
     <div className="min-h-screen w-full overflow-x-hidden bg-white dark:bg-neutral-950">
       <ScrollToTop />
+      <Seo />
       <Navigation scrolled={scrolled} />
 
       <main>
