@@ -10,7 +10,7 @@ interface NavItem {
 }
 
 const mainNav: NavItem[] = [
-{ name: 'Solutions', path: '/programs' },
+{ name: 'Pathways', path: '/programs' },
 { name: 'Age', path: '/age' },
 { name: 'Learning Guide', path: '/resources' },
 { name: 'Insights', path: '/journal' },
