@@ -12,7 +12,7 @@ export const programs: Program[] = [
   age_max: 18,
   age_range: 'Ages 14–18',
   duration_weeks: 12,
-  price_per_student: 10000,
+  price_per_student: 5000,
   features: [
   'Generative AI tools & prompt engineering',
   'Data literacy & model evaluation',
