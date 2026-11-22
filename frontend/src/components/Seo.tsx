@@ -3,9 +3,8 @@ import { useLocation } from 'react-router-dom';
 import { getProgramBySlug } from '../data/programs';
 import { getBlogPostBySlug } from '../data/blogPosts';
 
-// Canonical production host. Do not let preview/deployment env values create
-// canonical URLs that point search engines at a Vercel preview or legacy host.
-const SITE_URL = 'https://stemforge.co.ke';
+// Vercel redirects the apex domain to www; keep all SEO URLs on the final host.
+const SITE_URL = 'https://www.stemforge.co.ke';
 const DEFAULT_TITLE = 'STEMForge | Practical STEM, AI & Innovation Education for Schools';
 const DEFAULT_DESCRIPTION = 'STEMForge helps schools equip students with practical AI, coding, robotics, and entrepreneurship skills through project-based STEM education.';
 
